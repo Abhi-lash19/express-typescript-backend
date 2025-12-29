@@ -1,0 +1,31 @@
+{
+  "name": "express-typescript-backend",
+  "version": "1.0.0",
+  "description": "A backend application built using Express.js and TypeScript, demonstrating REST API design, middleware usage, error handling, static assets, and dynamic server-side rendering with a scalable project structure.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhi-lash19/express-typescript-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Abhi-lash19/express-typescript-backend/issues"
+  },
+  "homepage": "https://github.com/Abhi-lash19/express-typescript-backend#readme",
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.3",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.3",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
