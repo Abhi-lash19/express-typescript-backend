@@ -1,0 +1,43 @@
+<!-- views/admin/dashboard.ejs -->
+ 
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body class="container">
+
+<h1>Backend Admin Dashboard</h1>
+
+<nav>
+  <a href="/admin/docs">API Docs</a>
+  <a href="/admin/playground">API Playground</a>
+</nav>
+
+<section id="content"></section>
+
+<script>
+fetch("/internal/meta/apis")
+  .then(res => {
+    if (!res.ok) throw new Error("Failed to load API metadata");
+    return res.json();
+  })
+  .then(data => {
+    document.getElementById("content").innerHTML = `
+      <article>
+        <h2>Total APIs</h2>
+        <p><strong>${data.apis.length}</strong></p>
+      </article>
+    `;
+  })
+  .catch(err => {
+    document.getElementById("content").innerHTML =
+      `<p style="color:red;">${err.message}</p>`;
+  });
+</script>
+
+
+</body>
+</html>

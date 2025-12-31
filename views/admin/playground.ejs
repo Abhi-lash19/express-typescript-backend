@@ -1,0 +1,60 @@
+<!-- views/admin/playground.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>API Playground</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body class="container">
+
+<h1>API Playground</h1>
+
+<select id="apiSelect"></select>
+<button onclick="callApi()">Send Request</button>
+
+<pre id="result"></pre>
+
+<script>
+let apis = [];
+
+fetch("/internal/meta/apis")
+  .then(res => res.json())
+  .then(data => {
+    apis = data.apis;
+    document.getElementById("apiSelect").innerHTML =
+      apis.map((a, i) => `<option value="${i}">${a.method} ${a.path}</option>`).join("");
+  });
+
+function callApi() {
+  const api = apis[document.getElementById("apiSelect").value];
+
+  fetch(api.path, {
+    method: api.method,
+    headers: {
+      "Content-Type": "application/json",
+      ...(api.authRequired ? { "x-api-key": "mysecretkey" } : {})
+    }
+  })
+  .then(async res => {
+    const body = await res.json();
+    if (!res.ok) {
+      throw new Error(body.message || "Request failed");
+    }
+    return body;
+  })
+  .then(data => {
+    document.getElementById("result").textContent =
+      JSON.stringify(data, null, 2);
+  })
+  .catch(err => {
+    document.getElementById("result").textContent =
+      `Error: ${err.message}`;
+  });
+}
+</script>
+
+
+</body>
+</html>
