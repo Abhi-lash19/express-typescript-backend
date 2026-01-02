@@ -45,7 +45,6 @@ app.use(
       ];
 
       if (process.env.NODE_ENV === "production") {
-        // Render domain or custom frontend URL can be added here
         allowedOrigins.push("https://express-typescript-backend.onrender.com");
       }
 
@@ -85,7 +84,17 @@ app.get("/", (req, res) => {
   res.render("index", { text1: "Hello from EJS!" });
 });
 
+/**
+ * Public API (Versioned)
+ */
+app.use("/api/v1/tasks", taskRouter);
+
+/**
+ * Legacy API (Backward compatibility)
+ * NOTE: Can be deprecated later
+ */
 app.use("/tasks", taskRouter);
+
 app.use("/internal", internalRouter);
 app.use("/admin", adminRouter);
 

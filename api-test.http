@@ -120,3 +120,15 @@ GET http://localhost:3000/tasks HTTP/1.1
 ############################################
 ### Unknown route
 GET http://localhost:3000/unknown-route HTTP/1.1
+
+############################################
+# 10. LIST TASKS VIA API V1
+# Expected: 200 OK
+############################################
+GET http://localhost:3000/api/v1/tasks
+
+####################################
+# 11. CREATE TASK VIA API V1
+# Expected: 201 Created
+####################################
+POST http://localhost:3000/api/v1/tasks
