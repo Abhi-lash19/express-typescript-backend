@@ -9,26 +9,28 @@ import {
 } from "../dtos/task.mapper";
 
 export const taskController = {
-  list(req: Request, res: Response) {
+  async list(req: Request, res: Response) {
     const search = req.query.search as string | undefined;
-    const tasks = taskService.getTasks(search);
+
+    const tasks = await taskService.getTasks(search);
 
     return sendSuccess(res, {
       tasks: toTaskListResponseDTO(tasks),
     });
   },
 
-  getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response) {
     const id = Number(req.params.id);
-    const task = taskService.getTaskById(id);
+
+    const task = await taskService.getTaskById(id);
 
     return sendSuccess(res, {
       task: toTaskResponseDTO(task),
     });
   },
 
-  create(req: Request, res: Response) {
-    const task = taskService.createTask(req.body);
+  async create(req: Request, res: Response) {
+    const task = await taskService.createTask(req.body);
 
     return sendSuccess(
       res,
@@ -37,18 +39,20 @@ export const taskController = {
     );
   },
 
-  update(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
     const id = Number(req.params.id);
-    const task = taskService.updateTask(id, req.body);
+
+    const task = await taskService.updateTask(id, req.body);
 
     return sendSuccess(res, {
       task: toTaskResponseDTO(task),
     });
   },
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
     const id = Number(req.params.id);
-    taskService.deleteTask(id);
+
+    await taskService.deleteTask(id);
 
     return sendSuccess(res, {
       message: `Task with id ${id} deleted`,

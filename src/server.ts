@@ -5,6 +5,12 @@ if (process.env.NODE_ENV !== "production") {
   require("source-map-support/register");
 }
 
+import 'dotenv/config';
+
+if (process.env.NODE_ENV !== "production") {
+  require("source-map-support/register");
+}
+
 import express from "express";
 import path from "path";
 import cors from "cors";

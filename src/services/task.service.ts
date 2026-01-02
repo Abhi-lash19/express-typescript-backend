@@ -5,15 +5,15 @@ import { AppError } from "../errors/AppError";
 import { CreateTaskDTO, UpdateTaskDTO } from "../dtos/task.dto";
 
 export const taskService = {
-  getTasks(search?: string): Task[] {
+  async getTasks(search?: string): Promise<Task[]> {
     if (search) {
-      return taskRepository.findBySearch(search);
+      return await taskRepository.findBySearch(search);
     }
-    return taskRepository.findAll();
+    return await taskRepository.findAll();
   },
 
-  getTaskById(id: number): Task {
-    const task = taskRepository.findById(id);
+  async getTaskById(id: number): Promise<Task> {
+    const task = await taskRepository.findById(id);
 
     if (!task) {
       throw new AppError("Task not found", 404);
@@ -22,15 +22,15 @@ export const taskService = {
     return task;
   },
 
-  createTask(data: CreateTaskDTO): Task {
-    return taskRepository.create({
+  async createTask(data: CreateTaskDTO): Promise<Task> {
+    return await taskRepository.create({
       title: data.title,
       completed: data.completed ?? false,
     });
   },
 
-  updateTask(id: number, data: UpdateTaskDTO): Task {
-    const updated = taskRepository.update(id, {
+  async updateTask(id: number, data: UpdateTaskDTO): Promise<Task> {
+    const updated = await taskRepository.update(id, {
       title: data.title ?? "",
       completed: data.completed ?? false,
     });
@@ -42,8 +42,8 @@ export const taskService = {
     return updated;
   },
 
-  deleteTask(id: number): void {
-    const deleted = taskRepository.delete(id);
+  async deleteTask(id: number): Promise<void> {
+    const deleted = await taskRepository.delete(id);
 
     if (!deleted) {
       throw new AppError("Task not found", 404);

@@ -1,53 +1,109 @@
 // src/repositories/task.repository.ts
 
+import { supabase } from "../config/supabase";
+
 export interface Task {
   id: number;
   title: string;
   completed: boolean;
 }
 
-let tasks: Task[] = [
-  { id: 1, title: "Task 1", completed: false },
-  { id: 2, title: "Task 2", completed: false },
-];
-
 export const taskRepository = {
-  findAll(): Task[] {
-    return tasks;
+  async findAll(): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("id, title, completed")
+      .order("id", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return data as Task[];
   },
 
-  findBySearch(search: string): Task[] {
-    return tasks.filter((t) =>
-      t.title.toLowerCase().includes(search.toLowerCase())
-    );
+  async findBySearch(search: string): Promise<Task[]> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("id, title, completed")
+      .ilike("title", `%${search}%`)
+      .order("id", { ascending: true });
+
+    if (error) {
+      throw error;
+    }
+
+    return data as Task[];
   },
 
-  findById(id: number): Task | undefined {
-    return tasks.find((t) => t.id === id);
+  async findById(id: number): Promise<Task | undefined> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("id, title, completed")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return undefined; // not found
+      }
+      throw error;
+    }
+
+    return data as Task;
   },
 
-  create(task: Omit<Task, "id">): Task {
-    const newTask: Task = {
-      id: tasks.length + 1,
-      ...task,
-    };
+  async create(task: Omit<Task, "id">): Promise<Task> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .insert({
+        title: task.title,
+        completed: task.completed,
+      })
+      .select("id, title, completed")
+      .single();
 
-    tasks.push(newTask);
-    return newTask;
+    if (error) {
+      throw error;
+    }
+
+    return data as Task;
   },
 
-  update(id: number, update: Omit<Task, "id">): Task | undefined {
-    const index = tasks.findIndex((t) => t.id === id);
-    if (index === -1) return undefined;
+  async update(
+    id: number,
+    update: Omit<Task, "id">
+  ): Promise<Task | undefined> {
+    const { data, error } = await supabase
+      .from("tasks")
+      .update({
+        title: update.title,
+        completed: update.completed,
+      })
+      .eq("id", id)
+      .select("id, title, completed")
+      .single();
 
-    tasks[index] = { id, ...update };
-    return tasks[index];
+    if (error) {
+      if (error.code === "PGRST116") {
+        return undefined;
+      }
+      throw error;
+    }
+
+    return data as Task;
   },
 
-  delete(id: number): boolean {
-    const initialLength = tasks.length;
-    tasks = tasks.filter((t) => t.id !== id);
-    return tasks.length < initialLength;
+  async delete(id: number): Promise<boolean> {
+    const { error, count } = await supabase
+      .from("tasks")
+      .delete({ count: "exact" })
+      .eq("id", id);
+
+    if (error) {
+      throw error;
+    }
+
+    return Boolean(count && count > 0);
   },
 };
-
