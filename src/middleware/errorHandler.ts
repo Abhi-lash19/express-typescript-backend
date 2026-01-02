@@ -17,7 +17,7 @@ export function errorHandler(
       ? err
       : new AppError("Internal Server Error", 500, false);
 
-  // 🔴 Centralized error logging (Phase 3)
+  // Centralized error logging
   logger.error(
     {
       err,
@@ -31,7 +31,11 @@ export function errorHandler(
   // API clients
   if (req.accepts("json")) {
     return res.status(error.statusCode).json({
-      error: error.message,
+      success: false,
+      error: {
+        message: error.message,
+        code: error.statusCode,
+      },
     });
   }
 

@@ -2,40 +2,41 @@
 
 import { Request, Response } from "express";
 import { taskService } from "../services/task.service";
+import { sendSuccess } from "../utils";
 
 export const taskController = {
   list(req: Request, res: Response) {
     const search = req.query.search as string | undefined;
     const tasks = taskService.getTasks(search);
 
-    res.json({ tasks });
+    return sendSuccess(res, { tasks });
   },
 
   getById(req: Request, res: Response) {
     const id = Number(req.params.id);
     const task = taskService.getTaskById(id);
 
-    res.json({ task });
+    return sendSuccess(res, { task });
   },
 
   create(req: Request, res: Response) {
     const task = taskService.createTask(req.body);
 
-    res.status(201).json({ task });
+    return sendSuccess(res, { task }, 201);
   },
 
   update(req: Request, res: Response) {
     const id = Number(req.params.id);
     const task = taskService.updateTask(id, req.body);
 
-    res.json({ task });
+    return sendSuccess(res, { task });
   },
 
   delete(req: Request, res: Response) {
     const id = Number(req.params.id);
     taskService.deleteTask(id);
 
-    res.json({
+    return sendSuccess(res, {
       message: `Task with id ${id} deleted`,
     });
   },
