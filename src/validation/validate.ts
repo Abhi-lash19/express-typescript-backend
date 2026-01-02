@@ -28,7 +28,10 @@ export function validate(schemas: ValidationSchemas) {
       next();
     } catch (err) {
       if (err instanceof ZodError) {
-        throw new AppError(err.issues[0]?.message || "Invalid request", 400);
+        throw new AppError(
+            err.issues.map(i => i.message).join(", "),
+            400
+        );
       }
 
       throw new AppError("Invalid request", 400);

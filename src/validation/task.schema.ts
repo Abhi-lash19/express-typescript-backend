@@ -8,11 +8,12 @@ export const taskIdParamSchema = z.object({
 
 export const taskQuerySchema = z.object({
   search: z.string().optional(),
-});
+}).passthrough();
+
 
 export const createTaskSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  completed: z.boolean().optional(),
+  completed: z.coerce.boolean().optional(),
 });
 
 export const updateTaskSchema = createTaskSchema.partial();
