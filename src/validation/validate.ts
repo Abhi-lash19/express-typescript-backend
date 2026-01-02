@@ -13,15 +13,18 @@ type ValidationSchemas = {
 export function validate(schemas: ValidationSchemas) {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
+      // Validate request body
       if (schemas.body) {
         req.body = schemas.body.parse(req.body) as any;
       }
 
+      // Validate route params
       if (schemas.params) {
         req.params = schemas.params.parse(req.params) as any;
       }
 
-      if (schemas.query) {
+      // Validate query ONLY if query params exist
+      if (schemas.query && Object.keys(req.query).length > 0) {
         req.query = schemas.query.parse(req.query) as any;
       }
 
@@ -29,8 +32,8 @@ export function validate(schemas: ValidationSchemas) {
     } catch (err) {
       if (err instanceof ZodError) {
         throw new AppError(
-            err.issues.map(i => i.message).join(", "),
-            400
+          err.issues.map((i) => i.message).join(", "),
+          400
         );
       }
 
