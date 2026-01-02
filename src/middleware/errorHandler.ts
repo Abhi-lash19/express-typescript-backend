@@ -1,22 +1,29 @@
 // src/middleware/errorHandler.ts
 
 import { Request, Response, NextFunction } from "express";
-import { getErrorMessage } from "../utils";
+import { AppError } from "../errors/AppError";
 
-export default function errorHandler(
-  error: unknown,
+export function errorHandler(
+  err: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
-): void {
-  if (res.headersSent) {
-    next(error);
-    return;
+  _next: NextFunction
+) {
+  const error =
+    err instanceof AppError
+      ? err
+      : new AppError("Internal Server Error", 500, false);
+
+  // API clients
+  if (req.accepts("json")) {
+    return res.status(error.statusCode).json({
+      error: error.message,
+    });
   }
 
-  res.status(500).json({
-    error: {
-      message: getErrorMessage(error),
-    },
+  // Server-rendered pages (EJS)
+  return res.status(error.statusCode).render("error", {
+    message: error.message,
+    statusCode: error.statusCode,
   });
 }

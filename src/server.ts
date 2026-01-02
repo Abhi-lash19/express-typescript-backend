@@ -13,7 +13,8 @@ import morgan from "morgan";
 import { internalRouter } from "./routes/internal";
 import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
-import errorHandler from "./middleware/errorHandler";
+import { errorHandler } from "./middleware/errorHandler";
+import { AppError } from "./errors/AppError";
 
 const app = express();
 
@@ -55,6 +56,10 @@ app.use("/admin", adminRouter);
  * Error Handling (LAST)
  * ------------------------
  */
+app.use((req, res, next) => {
+  next(new AppError(`Route ${req.originalUrl} not found`, 404));
+});
+
 app.use(errorHandler);
 
 /**

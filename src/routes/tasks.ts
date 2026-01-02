@@ -2,6 +2,8 @@
 
 import { Router, Request, Response } from "express";
 import { auth } from "../middleware/auth";
+import { AppError } from "../errors/AppError";
+
 
 export const taskRouter = Router();
 
@@ -27,12 +29,17 @@ taskRouter.get("/", (req: Request, res: Response) => {
 });
 
 taskRouter.get("/:id", (req: Request, res: Response) => {
-  const taskId = req.params.id;
+  const taskId = Number(req.params.id);
+
+  if (isNaN(taskId)) {
+    throw new AppError("Task ID must be a number", 400);
+  }
 
   res.json({
     task: { id: taskId, title: `Task ${taskId}`, completed: false },
   });
 });
+
 
 /**
  * Protected routes
