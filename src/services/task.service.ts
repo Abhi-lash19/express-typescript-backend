@@ -2,6 +2,7 @@
 
 import { taskRepository, Task } from "../repositories/task.repository";
 import { AppError } from "../errors/AppError";
+import { CreateTaskDTO, UpdateTaskDTO } from "../dtos/task.dto";
 
 export const taskService = {
   getTasks(search?: string): Task[] {
@@ -21,18 +22,24 @@ export const taskService = {
     return task;
   },
 
-  createTask(data: Omit<Task, "id">): Task {
-    return taskRepository.create(data);
+  createTask(data: CreateTaskDTO): Task {
+    return taskRepository.create({
+      title: data.title,
+      completed: data.completed ?? false,
+    });
   },
 
-  updateTask(id: number, data: Omit<Task, "id">): Task {
-    const updatedTask = taskRepository.update(id, data);
+  updateTask(id: number, data: UpdateTaskDTO): Task {
+    const updated = taskRepository.update(id, {
+      title: data.title ?? "",
+      completed: data.completed ?? false,
+    });
 
-    if (!updatedTask) {
+    if (!updated) {
       throw new AppError("Task not found", 404);
     }
 
-    return updatedTask;
+    return updated;
   },
 
   deleteTask(id: number): void {
