@@ -1,11 +1,12 @@
 ############################################
 # Server: http://localhost:3000
-# Purpose: Validate request validation behavior
+# Purpose: Validate request validation, auth,
+#          rate limiting, and safe defaults
 ############################################
 
 
 ############################################
-# ✅ 1. LIST TASKS (NO QUERY)
+# 1. LIST TASKS (NO QUERY)
 # Expected: 200 OK
 ############################################
 ### List tasks
@@ -13,16 +14,16 @@ GET http://localhost:3000/tasks HTTP/1.1
 
 
 ############################################
-# ❌ 2. SEARCH TASKS (INVALID QUERY)
-# Reason: search must be a string without spaces
+# 2. SEARCH TASKS (INVALID QUERY)
+# Reason: space-containing query fails validation
 # Expected: 400 Bad Request
 ############################################
-### Invalid search query (contains space)
+### Invalid search query
 GET http://localhost:3000/tasks?search=abc Title HTTP/1.1
 
 
 ############################################
-# ❌ 3. GET TASK BY INVALID ID
+# 3. GET TASK BY INVALID ID
 # Reason: id must be a number
 # Expected: 400 Bad Request
 ############################################
@@ -31,10 +32,10 @@ GET http://localhost:3000/tasks/abc HTTP/1.1
 
 
 ############################################
-# ✅ 4. CREATE TASK (VALID JSON BODY)
+# 4. CREATE TASK (VALID JSON BODY)
 # Expected: 201 Created
 ############################################
-### Create a new task (valid)
+### Create task (valid JSON)
 POST http://localhost:3000/tasks HTTP/1.1
 Content-Type: application/json
 x-api-key: mysecretkey
@@ -46,11 +47,11 @@ x-api-key: mysecretkey
 
 
 ############################################
-# ❌ 5. CREATE TASK (INVALID BODY)
+# 5. CREATE TASK (INVALID BODY)
 # Reason: title must be a string
 # Expected: 400 Bad Request
 ############################################
-### Create task with invalid title type
+### Create task with invalid title
 POST http://localhost:3000/tasks HTTP/1.1
 Content-Type: application/json
 x-api-key: mysecretkey
@@ -62,13 +63,12 @@ x-api-key: mysecretkey
 
 
 ############################################
-# ⚠️ 6. CREATE TASK WITH FORM DATA
-# Reason: completed=false is a string
-# Behavior depends on schema:
-# - ❌ FAIL if strict boolean
-# - ✅ PASS if z.coerce.boolean() is used
+# 6. CREATE TASK WITH FORM DATA
+# Behavior:
+# - Passes if z.coerce.boolean() is enabled
+# - Fails if strict boolean validation
 ############################################
-### Create task with form data (depends on schema)
+### Create task with form-urlencoded data
 POST http://localhost:3000/tasks HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 x-api-key: mysecretkey
@@ -77,7 +77,7 @@ title=Another+task&completed=false
 
 
 ############################################
-# ❌ 7. UPDATE TASK WITHOUT AUTH
+# 7. UPDATE TASK WITHOUT AUTH
 # Expected: 401 Unauthorized
 ############################################
 ### Update task without API key
@@ -91,10 +91,10 @@ Content-Type: application/json
 
 
 ############################################
-# ✅ 8. UPDATE TASK (VALID)
+# 8. UPDATE TASK WITH AUTH
 # Expected: 200 OK
 ############################################
-### Update a task (valid)
+### Update task (authorized)
 PUT http://localhost:3000/tasks/2 HTTP/1.1
 Content-Type: application/json
 x-api-key: mysecretkey
@@ -103,3 +103,20 @@ x-api-key: mysecretkey
   "title": "Updated task title",
   "completed": true
 }
+
+
+############################################
+# 9. RATE LIMIT TEST
+# Action: Send this request >100 times quickly
+# Expected: 429 Too Many Requests
+############################################
+### Rate limit test
+GET http://localhost:3000/tasks HTTP/1.1
+
+
+############################################
+# 10. UNKNOWN ROUTE
+# Expected: 404 Not Found
+############################################
+### Unknown route
+GET http://localhost:3000/unknown-route HTTP/1.1

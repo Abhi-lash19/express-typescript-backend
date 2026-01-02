@@ -8,7 +8,9 @@ if (process.env.NODE_ENV !== "production") {
 import express from "express";
 import path from "path";
 import cors from "cors";
+import helmet from "helmet";
 import { requestLogger } from "./middleware/requestLogger";
+import { globalRateLimiter } from "./middleware/rateLimiter";
 import { internalRouter } from "./routes/internal";
 import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
@@ -22,7 +24,42 @@ const app = express();
  * Global Middleware
  * ------------------------
  */
-app.use(cors());
+
+// Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: false, // required for EJS inline scripts
+  })
+);
+
+// Controlled CORS
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow server-to-server & REST clients
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+      ];
+
+      if (process.env.NODE_ENV === "production") {
+        // Render domain or custom frontend URL can be added here
+        allowedOrigins.push("https://express-typescript-backend.onrender.com");
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
+
+// Global rate limiting
+app.use(globalRateLimiter);
 
 // Structured request logging
 app.use(requestLogger);
@@ -71,6 +108,5 @@ app.use(errorHandler);
 const PORT = Number(process.env.PORT) || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Express running on port ${PORT}`);
+  console.log(`Express running on port ${PORT}`);
 });
-
