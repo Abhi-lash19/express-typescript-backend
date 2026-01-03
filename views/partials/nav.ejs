@@ -3,9 +3,7 @@
 <header class="container">
   <nav>
     <ul>
-      <li>
-        <strong>Backend Admin</strong>
-      </li>
+      <li><strong>Backend Admin</strong></li>
     </ul>
 
     <ul>
@@ -15,19 +13,18 @@
       <li><a href="/admin/docs">Docs</a></li>
 
       <li>
-        <button disabled title="Theme toggle coming soon">
+        <button type="button" onclick="toggleTheme()" title="Toggle theme">
           🌗
         </button>
       </li>
 
       <li>
-        <a href="/logout" role="button" class="outline">
+        <button type="button" class="outline" onclick="logout()">
           Logout
-        </a>
+        </button>
       </li>
     </ul>
   </nav>
 
   <hr />
 </header>
-

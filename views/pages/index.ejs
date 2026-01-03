@@ -5,39 +5,41 @@
   body: `
     <hgroup>
       <h1>Backend Admin Console</h1>
-      <p>${text1}</p>
+      <p>Production-ready Express + TypeScript backend</p>
     </hgroup>
 
-    <section class="grid">
+    <section class="grid" id="metrics">
       <article>
         <h4>Service Status</h4>
-        <p><strong>Healthy</strong></p>
-      </article>
-
-      <article>
-        <h4>Environment</h4>
-        <p>—</p>
-      </article>
-
-      <article>
-        <h4>Node Version</h4>
-        <p>—</p>
+        <p class="metric" id="status">—</p>
       </article>
 
       <article>
         <h4>Uptime</h4>
-        <p>—</p>
+        <p class="metric" id="uptime">—</p>
+      </article>
+
+      <article>
+        <h4>Environment</h4>
+        <p class="metric" id="env">—</p>
+      </article>
+
+      <article>
+        <h4>Node Version</h4>
+        <p class="metric" id="node">—</p>
       </article>
 
       <article>
         <h4>API Requests</h4>
-        <p>—</p>
+        <p class="metric muted">N/A</p>
       </article>
 
       <article>
-        <h4>Security Model</h4>
-        <p>JWT Auth + Supabase RLS</p>
+        <h4>Security</h4>
+        <p class="metric">JWT + RLS</p>
       </article>
     </section>
+
+    <script src="/js/dashboard.js"></script>
   `
 }) %>
