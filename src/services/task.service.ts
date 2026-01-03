@@ -4,7 +4,6 @@ import { taskRepository, Task } from "../repositories/task.repository";
 import { AppError } from "../errors/AppError";
 import { CreateTaskDTO, UpdateTaskDTO } from "../dtos/task.dto";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { supabase } from "../config/supabase";
 
 export const taskService = {
   async getTasks(
@@ -13,17 +12,27 @@ export const taskService = {
     search?: string,
     page = 1,
     limit = 10
-  ): Promise<Task[]> {
+  ): Promise<{ tasks: Task[]; total: number }> {
     const offset = (page - 1) * limit;
 
     if (search) {
-      return taskRepository.findBySearch(supabase, userId, search, offset, limit);
+      return taskRepository.findBySearch(
+        supabase,
+        userId,
+        search,
+        offset,
+        limit
+      );
     }
 
     return taskRepository.findAll(supabase, userId, offset, limit);
   },
 
-  async getTaskById(supabase: SupabaseClient, userId: string, id: number): Promise<Task> {
+  async getTaskById(
+    supabase: SupabaseClient,
+    userId: string,
+    id: number
+  ): Promise<Task> {
     const task = await taskRepository.findById(supabase, userId, id);
     if (!task) throw new AppError("Task not found", 404);
     return task;
@@ -55,7 +64,11 @@ export const taskService = {
     return updated;
   },
 
-  async deleteTask(supabase: SupabaseClient, userId: string, id: number): Promise<void> {
+  async deleteTask(
+    supabase: SupabaseClient,
+    userId: string,
+    id: number
+  ): Promise<void> {
     const deleted = await taskRepository.delete(supabase, userId, id);
     if (!deleted) throw new AppError("Task not found", 404);
   },

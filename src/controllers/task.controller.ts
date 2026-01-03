@@ -14,7 +14,7 @@ export const taskController = {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 10);
 
-    const tasks = await taskService.getTasks(
+    const { tasks, total } = await taskService.getTasks(
       req.supabase!,
       req.user!.id,
       search,
@@ -22,11 +22,12 @@ export const taskController = {
       limit
     );
 
-    return sendSuccess(res, {
-      page,
-      limit,
-      tasks: toTaskListResponseDTO(tasks),
-    });
+    return sendSuccess(
+      res,
+      { tasks: toTaskListResponseDTO(tasks) },
+      200,
+      { page, limit, total }
+    );
   },
 
   async getById(req: Request, res: Response) {

@@ -1,6 +1,5 @@
 // src/repositories/task.repository.ts
 
-import { supabase } from "../config/supabase";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export interface Task {
@@ -15,16 +14,20 @@ export const taskRepository = {
     userId: string,
     offset = 0,
     limit = 10
-  ): Promise<Task[]> {
-    const { data, error } = await supabase
+  ): Promise<{ tasks: Task[]; total: number }> {
+    const { data, count, error } = await supabase
       .from("tasks")
-      .select("id, title, completed")
+      .select("id, title, completed", { count: "exact" })
       .eq("user_id", userId)
       .order("id", { ascending: true })
       .range(offset, offset + limit - 1);
 
     if (error) throw error;
-    return data as Task[];
+
+    return {
+      tasks: data as Task[],
+      total: count ?? 0,
+    };
   },
 
   async findBySearch(
@@ -33,20 +36,28 @@ export const taskRepository = {
     search: string,
     offset = 0,
     limit = 10
-  ): Promise<Task[]> {
-    const { data, error } = await supabase
+  ): Promise<{ tasks: Task[]; total: number }> {
+    const { data, count, error } = await supabase
       .from("tasks")
-      .select("id, title, completed")
+      .select("id, title, completed", { count: "exact" })
       .eq("user_id", userId)
       .ilike("title", `%${search}%`)
       .order("id", { ascending: true })
       .range(offset, offset + limit - 1);
 
     if (error) throw error;
-    return data as Task[];
+
+    return {
+      tasks: data as Task[],
+      total: count ?? 0,
+    };
   },
 
-  async findById(supabase: SupabaseClient, userId: string, id: number): Promise<Task | undefined> {
+  async findById(
+    supabase: SupabaseClient,
+    userId: string,
+    id: number
+  ): Promise<Task | undefined> {
     const { data, error } = await supabase
       .from("tasks")
       .select("id, title, completed")
@@ -99,7 +110,11 @@ export const taskRepository = {
     return data as Task;
   },
 
-  async delete(supabase: SupabaseClient, userId: string, id: number): Promise<boolean> {
+  async delete(
+    supabase: SupabaseClient,
+    userId: string,
+    id: number
+  ): Promise<boolean> {
     const { count, error } = await supabase
       .from("tasks")
       .delete({ count: "exact" })

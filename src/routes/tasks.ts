@@ -14,16 +14,17 @@ import { supabaseAuth } from "../middleware/supabaseAuth";
 export const taskRouter = Router();
 
 /**
- * ------------------------
- * Protected routes (Supabase Auth)
- * ------------------------
- * All task routes require a valid Supabase JWT.
- * req.user is guaranteed to exist beyond this point.
+ * ALL routes require Supabase authentication
+ * Reason:
+ * - Tasks are user-owned
+ * - RLS depends on authenticated user
  */
 taskRouter.use(supabaseAuth);
 
 /**
- * List tasks (with optional search + pagination)
+ * GET /tasks
+ * - List tasks (user-scoped)
+ * - Supports search + pagination
  */
 taskRouter.get(
   "/",
@@ -32,7 +33,9 @@ taskRouter.get(
 );
 
 /**
- * Get task by ID
+ * GET /tasks/:id
+ * - Fetch a single task
+ * - Returns 404 if not owned / not found
  */
 taskRouter.get(
   "/:id",
@@ -41,7 +44,8 @@ taskRouter.get(
 );
 
 /**
- * Create task
+ * POST /tasks
+ * - Create a task for the authenticated user
  */
 taskRouter.post(
   "/",
@@ -50,7 +54,8 @@ taskRouter.post(
 );
 
 /**
- * Update task
+ * PUT /tasks/:id
+ * - Update task if owned
  */
 taskRouter.put(
   "/:id",
@@ -62,7 +67,8 @@ taskRouter.put(
 );
 
 /**
- * Delete task
+ * DELETE /tasks/:id
+ * - Delete task if owned
  */
 taskRouter.delete(
   "/:id",
