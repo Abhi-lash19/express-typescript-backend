@@ -15,29 +15,30 @@ export function validate(schemas: ValidationSchemas) {
     try {
       // Validate request body
       if (schemas.body) {
-        req.body = schemas.body.parse(req.body) as any;
+        const result = schemas.body.safeParse(req.body);
+        if (!result.success) {
+          throw new AppError("Invalid request", 400);
+        }
       }
-
-      // Validate route params
-      if (schemas.params) {
-        req.params = schemas.params.parse(req.params) as any;
+      // Validate query ONLY
+      if (schemas.query) {
+        const result = schemas.query.safeParse(req.query);
+        if (!result.success) {
+          throw new AppError("Invalid request", 400);
+        }
       }
-
+      
       // Validate query ONLY if query params exist
-      if (schemas.query && Object.keys(req.query).length > 0) {
-        req.query = schemas.query.parse(req.query) as any;
+      if (schemas.params) {
+        const result = schemas.params.safeParse(req.params);
+        if (!result.success) {
+          throw new AppError("Invalid request", 400);
+        }
       }
 
       next();
     } catch (err) {
-      if (err instanceof ZodError) {
-        throw new AppError(
-          err.issues.map((i) => i.message).join(", "),
-          400
-        );
-      }
-
-      throw new AppError("Invalid request", 400);
+      next(err);
     }
   };
 }

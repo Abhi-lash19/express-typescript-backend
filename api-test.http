@@ -1,138 +1,106 @@
 ############################################
 # Server: http://localhost:3000
-# Purpose: Validate Supabase-backed API
+# Auth: Supabase JWT
 ############################################
+
+@token = eyJhbGciOiJFUzI1NiIsImtpZCI6IjlmODFjNmE0LWNjYTMtNDM3Yy04ZjI3LWMxYWU2ZTBlMjAyMyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3B3bnR6dGRjcmRtdG90cWdjdnVlLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIwMjllNzBmMC1mMjg1LTQyNzUtODA2Mi00NjU3YzU0YzFiZWIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzY3NDIzODM3LCJpYXQiOjE3Njc0MjAyMzcsImVtYWlsIjoiYWJoaWxhc2hrdW1hcmdpcmk2M0BnbWFpbC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc2NzQyMDIzN31dLCJzZXNzaW9uX2lkIjoiZWRlN2Q3ZDMtNzE0Ny00Yzg4LWE5NmYtZjk1Y2E5NGExZmY5IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.Sl8FRsXEo6vzoY_2y4PzXffMuFguenvWHZ-ul4-fbos9dIzHNwaSB29n206YErzow1V0c0TJhww-mDI29-YX3A
 
 
 ############################################
-# 1. LIST TASKS
+# 1. LIST TASKS (AUTHORIZED)
 # Expected: 200 OK
-# Response: success=true, data.tasks[]
 ############################################
 ### List tasks
-GET http://localhost:3000/tasks HTTP/1.1
+GET http://localhost:3000/tasks
+Authorization: Bearer {{token}}
 
 
 ############################################
 # 2. SEARCH TASKS
-# Expected: 200 OK
-# Response: filtered tasks
+# Expected: 200 OK (user-scoped)
 ############################################
 ### Search tasks
-GET http://localhost:3000/tasks?search=Supabase HTTP/1.1
+GET http://localhost:3000/tasks?search=1
+Authorization: Bearer {{token}}
 
 
 ############################################
-# 3. GET TASK BY INVALID ID FORMAT
-# Expected: 400 Bad Request
+# 3. LIST TASKS WITH PAGINATION
+# Expected: 200 OK
 ############################################
-### Invalid task ID format
-GET http://localhost:3000/tasks/8 HTTP/1.1
+### Paginated tasks
+GET http://localhost:3000/tasks?page=1&limit=5
+Authorization: Bearer {{token}}
 
 
 ############################################
-# 4. GET TASK BY NON-EXISTENT ID
+# 4. GET TASK BY ID (OWN TASK)
+# Expected: 200 OK
+############################################
+### Get task by ID
+GET http://localhost:3000/tasks/1
+Authorization: Bearer {{token}}
+
+
+############################################
+# 5. GET TASK BY ID (NOT OWNED)
 # Expected: 404 Not Found
 ############################################
-### Task not found
-GET http://localhost:3000/tasks/9999 HTTP/1.1
+### Cross-user access attempt
+GET http://localhost:3000/tasks/9999
+Authorization: Bearer {{token}}
 
 
 ############################################
-# 5. CREATE TASK (VALID)
+# 6. CREATE TASK
 # Expected: 201 Created
 ############################################
 ### Create task
-POST http://localhost:3000/tasks HTTP/1.1
+POST http://localhost:3000/tasks
+Authorization: Bearer {{token}}
 Content-Type: application/json
-x-api-key: mysecretkey
 
 {
-  "title": "Verify Supabase integration",
+  "title": "My Supabase Task new",
   "completed": false
 }
 
 
 ############################################
-# 6. CREATE TASK (INVALID BODY)
-# Expected: 400 Bad Request
-############################################
-### Invalid task body
-POST http://localhost:3000/tasks HTTP/1.1
-Content-Type: application/json
-x-api-key: mysecretkey
-
-{
-  "title": 123
-}
-
-
-############################################
-# 7. UPDATE TASK WITHOUT AUTH
-# Expected: 401 Unauthorized
-############################################
-### Update without API key
-PUT http://localhost:3000/tasks/1 HTTP/1.1
-Content-Type: application/json
-
-{
-  "title": "Should fail",
-  "completed": true
-}
-
-
-############################################
-# 8. UPDATE TASK (VALID)
+# 7. UPDATE TASK
 # Expected: 200 OK
 ############################################
 ### Update task
-PUT http://localhost:3000/tasks/1 HTTP/1.1
+PUT http://localhost:3000/tasks/14
+Authorization: Bearer {{token}}
 Content-Type: application/json
-x-api-key: mysecretkey
 
 {
-  "title": "Updated from API",
+  "title": "Updated title",
   "completed": true
 }
 
 
 ############################################
-# 9. DELETE TASK (VALID)
+# 8. DELETE TASK
 # Expected: 200 OK
 ############################################
 ### Delete task
-DELETE http://localhost:3000/tasks/1 HTTP/1.1
-x-api-key: mysecretkey
+DELETE http://localhost:3000/tasks/14
+Authorization: Bearer {{token}}
 
 
 ############################################
-# 10. RATE LIMIT TEST
-# Expected: 429 Too Many Requests
+# 9. UNAUTHORIZED ACCESS
+# Expected: 401 Unauthorized
 ############################################
-### Rate limit test
-GET http://localhost:3000/tasks HTTP/1.1
-
-
-############################################
-# 11. UNKNOWN ROUTE
-# Expected: 404 Not Found
-############################################
-### Unknown route
-GET http://localhost:3000/unknown-route HTTP/1.1
+### Missing token
+GET http://localhost:3000/tasks
 
 
 ############################################
-# 12. API VERSIONED ROUTES
+# 10. API V1 ROUTES (SAME AUTH BEHAVIOR)
 ############################################
-### List tasks (v1)
-GET http://localhost:3000/api/v1/tasks HTTP/1.1
-
-### Create task (v1)
-POST http://localhost:3000/api/v1/tasks HTTP/1.1
-Content-Type: application/json
-x-api-key: mysecretkey
-
-{
-  "title": "Task via API v1",
-  "completed": false
-}
+### List tasks via API v1
+GET http://localhost:3000/api/v1/tasks
+Authorization: Bearer {{token}}

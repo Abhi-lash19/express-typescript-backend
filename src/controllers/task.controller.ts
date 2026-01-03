@@ -11,18 +11,30 @@ import {
 export const taskController = {
   async list(req: Request, res: Response) {
     const search = req.query.search as string | undefined;
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 10);
 
-    const tasks = await taskService.getTasks(search);
+    const tasks = await taskService.getTasks(
+      req.supabase!,
+      req.user!.id,
+      search,
+      page,
+      limit
+    );
 
     return sendSuccess(res, {
+      page,
+      limit,
       tasks: toTaskListResponseDTO(tasks),
     });
   },
 
   async getById(req: Request, res: Response) {
-    const id = Number(req.params.id);
-
-    const task = await taskService.getTaskById(id);
+    const task = await taskService.getTaskById(
+      req.supabase!,
+      req.user!.id,
+      Number(req.params.id)
+    );
 
     return sendSuccess(res, {
       task: toTaskResponseDTO(task),
@@ -30,32 +42,35 @@ export const taskController = {
   },
 
   async create(req: Request, res: Response) {
-    const task = await taskService.createTask(req.body);
-
-    return sendSuccess(
-      res,
-      { task: toTaskResponseDTO(task) },
-      201
+    const task = await taskService.createTask(
+      req.supabase!,
+      req.user!.id,
+      req.body
     );
+
+    return sendSuccess(res, { task }, 201);
   },
 
   async update(req: Request, res: Response) {
-    const id = Number(req.params.id);
+    const task = await taskService.updateTask(
+      req.supabase!,
+      req.user!.id,
+      Number(req.params.id),
+      req.body
+    );
 
-    const task = await taskService.updateTask(id, req.body);
-
-    return sendSuccess(res, {
-      task: toTaskResponseDTO(task),
-    });
+    return sendSuccess(res, { task });
   },
 
   async delete(req: Request, res: Response) {
-    const id = Number(req.params.id);
-
-    await taskService.deleteTask(id);
+    await taskService.deleteTask(
+      req.supabase!,
+      req.user!.id,
+      Number(req.params.id)
+    );
 
     return sendSuccess(res, {
-      message: `Task with id ${id} deleted`,
+      message: "Task deleted successfully",
     });
   },
 };

@@ -1,7 +1,6 @@
 // src/routes/tasks.ts
 
 import { Router } from "express";
-import { auth } from "../middleware/auth";
 import { validate } from "../validation/validate";
 import {
   taskIdParamSchema,
@@ -10,11 +9,21 @@ import {
   updateTaskSchema,
 } from "../validation/task.schema";
 import { taskController } from "../controllers/task.controller";
+import { supabaseAuth } from "../middleware/supabaseAuth";
 
 export const taskRouter = Router();
 
 /**
- * Public routes
+ * ------------------------
+ * Protected routes (Supabase Auth)
+ * ------------------------
+ * All task routes require a valid Supabase JWT.
+ * req.user is guaranteed to exist beyond this point.
+ */
+taskRouter.use(supabaseAuth);
+
+/**
+ * List tasks (with optional search + pagination)
  */
 taskRouter.get(
   "/",
@@ -22,6 +31,9 @@ taskRouter.get(
   taskController.list
 );
 
+/**
+ * Get task by ID
+ */
 taskRouter.get(
   "/:id",
   validate({ params: taskIdParamSchema }),
@@ -29,18 +41,19 @@ taskRouter.get(
 );
 
 /**
- * Protected routes
+ * Create task
  */
 taskRouter.post(
   "/",
-  auth,
   validate({ body: createTaskSchema }),
   taskController.create
 );
 
+/**
+ * Update task
+ */
 taskRouter.put(
   "/:id",
-  auth,
   validate({
     params: taskIdParamSchema,
     body: updateTaskSchema,
@@ -48,8 +61,11 @@ taskRouter.put(
   taskController.update
 );
 
+/**
+ * Delete task
+ */
 taskRouter.delete(
   "/:id",
-  auth,
+  validate({ params: taskIdParamSchema }),
   taskController.delete
 );

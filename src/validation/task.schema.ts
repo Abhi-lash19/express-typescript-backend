@@ -6,9 +6,14 @@ export const taskIdParamSchema = z.object({
   id: z.string().regex(/^\d+$/, "Task ID must be a number"),
 });
 
-export const taskQuerySchema = z.object({
-  search: z.string().optional(),
-}).passthrough();
+export const taskQuerySchema = z
+  .object({
+    search: z.string().optional(),
+    page: z.coerce.number().int().positive().optional(),
+    limit: z.coerce.number().int().positive().max(100).optional(),
+  })
+  .passthrough();
+
 
 
 export const createTaskSchema = z.object({
