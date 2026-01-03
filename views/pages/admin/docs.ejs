@@ -1,0 +1,25 @@
+<!--views/pages/admin/docs.ejs-->
+
+<%- include("../../layout/base", {
+  title: "API Documentation",
+  body: `
+    <hgroup>
+      <h1>API Documentation</h1>
+      <p>Authentication, RLS, endpoints, and error model</p>
+    </hgroup>
+
+    <article>
+      <p>
+        This documentation explains how the backend works internally,
+        including authentication flow, authorization boundaries,
+        and data access rules.
+      </p>
+
+      <p>
+        Intended for developers, reviewers, and interview demos.
+      </p>
+
+      <p><em>Phase 5 implementation</em></p>
+    </article>
+  `
+}) %>

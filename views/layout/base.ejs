@@ -1,0 +1,52 @@
+<!--views/layout/base.ejs-->
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title><%= title || "Backend Admin" %></title>
+
+    <!-- Pico.css -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
+    />
+
+    <style>
+      /* Phase 0 polish — minimal, intentional */
+      header nav strong {
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      main.container {
+        margin-top: 2.5rem;
+      }
+
+      footer {
+        margin-top: 4rem;
+        opacity: 0.6;
+      }
+
+      hgroup > p {
+        max-width: 60ch;
+      }
+
+      article {
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <%- include("../partials/nav") %>
+
+    <main class="container">
+      <%- body %>
+    </main>
+
+    <%- include("../partials/footer") %>
+  </body>
+</html>

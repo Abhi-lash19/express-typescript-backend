@@ -1,0 +1,25 @@
+<!--views/pages/admin/playground.ejs-->
+
+<%- include("../../layout/base", {
+  title: "API Playground",
+  body: `
+    <hgroup>
+      <h1>API Playground</h1>
+      <p>Explore and test backend endpoints</p>
+    </hgroup>
+
+    <article>
+      <p>
+        This playground allows you to execute API requests
+        against the backend with authentication auto-injected.
+      </p>
+
+      <p>
+        Designed as a lightweight alternative to Swagger —
+        optimized for internal debugging and demos.
+      </p>
+
+      <p><em>Phase 3 implementation</em></p>
+    </article>
+  `
+}) %>

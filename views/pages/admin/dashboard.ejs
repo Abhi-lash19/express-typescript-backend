@@ -1,0 +1,26 @@
+<!--views/pages/admin/dashboard.ejs-->
+
+<%- include("../../layout/base", {
+  title: "Admin Dashboard",
+  body: `
+    <hgroup>
+      <h1>Admin Dashboard</h1>
+      <p>Read-only backend system overview</p>
+    </hgroup>
+
+    <article>
+      <p>
+        This dashboard provides a high-level view of authentication,
+        security boundaries, and API health.
+      </p>
+
+      <p>
+        All data shown here is derived from the running backend
+        and reflects production behavior.
+      </p>
+
+      <p><em>Phase 2 implementation</em></p>
+    </article>
+  `
+}) %>
+

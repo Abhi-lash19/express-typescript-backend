@@ -87,7 +87,10 @@ app.use(express.static(path.join(__dirname, "..", "public")));
  * ------------------------
  */
 app.get("/", (req, res) => {
-  res.render("index", { text1: "Hello from EJS!" });
+  res.render("pages/index", {
+    title: "Backend Admin",
+    text1: "Production-ready Express + TypeScript backend",
+  });
 });
 
 /**

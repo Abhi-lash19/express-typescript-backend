@@ -1,0 +1,14 @@
+<!--views/pages/error.ejs-->
+<%- include("../layout/base", {
+  title: "Error",
+  body: `
+    <hgroup>
+      <h1>Error</h1>
+      <p>${message || "Something went wrong"}</p>
+    </hgroup>
+
+    <a href="/" role="button" class="outline">
+      ← Back to Home
+    </a>
+  `
+}) %>
