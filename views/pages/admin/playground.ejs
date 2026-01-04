@@ -5,21 +5,79 @@
   body: `
     <hgroup>
       <h1>API Playground</h1>
-      <p>Explore and test backend endpoints</p>
+      <p>Swagger-like API explorer for authenticated backend testing</p>
     </hgroup>
 
+    <!-- =====================
+         Request Builder
+         ===================== -->
     <article>
-      <p>
-        This playground allows you to execute API requests
-        against the backend with authentication auto-injected.
-      </p>
+      <h3>Request</h3>
 
-      <p>
-        Designed as a lightweight alternative to Swagger —
-        optimized for internal debugging and demos.
-      </p>
+      <div class="grid">
+        <label>
+          Method
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+          </select>
+        </label>
 
-      <p><em>Phase 3 implementation</em></p>
+        <label>
+          Endpoint
+          <input
+            id="endpoint"
+            type="text"
+            placeholder="/tasks?page=1&limit=10"
+            value="/tasks"
+          />
+        </label>
+      </div>
+
+      <label>
+        JSON Body (optional)
+        <textarea
+          id="body"
+          rows="6"
+          placeholder='{
+  "title": "My task",
+  "completed": false
+}'
+        ></textarea>
+      </label>
+
+      <div class="grid">
+        <button id="send">Send Request</button>
+        <button class="outline" id="copyCurl">Copy as cURL</button>
+      </div>
     </article>
+
+    <!-- =====================
+         Response Viewer
+         ===================== -->
+    <article>
+      <h3>Response</h3>
+
+      <ul>
+        <li><strong>Status:</strong> <span id="status">—</span></li>
+        <li><strong>Time:</strong> <span id="time">—</span> ms</li>
+        <li><strong>Rate Limit:</strong> <span id="rate">—</span></li>
+      </ul>
+
+      <pre><code id="response">{}</code></pre>
+    </article>
+
+    <!-- =====================
+         Recent Requests
+         ===================== -->
+    <article>
+      <h3>Recent Requests</h3>
+      <ul id="recent"></ul>
+    </article>
+
+    <script src="/js/playground.js"></script>
   `
 }) %>
+
