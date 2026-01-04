@@ -8,20 +8,24 @@
   <p>Swagger-like API explorer for backend testing</p>
 </hgroup>
 
+<!-- Authorization -->
 <article>
   <h3>Authorization</h3>
   <input id="token" placeholder="Bearer JWT (optional for GET)" />
+  <small>POST / PUT / DELETE require Supabase JWT</small>
 </article>
 
+<!-- Endpoints -->
 <article>
   <h3>Endpoints</h3>
   <details open>
     <summary>Tasks API</summary>
-    <ul id="endpoint-list"></ul>
+    <ul id="endpoint-list" class="endpoint-list"></ul>
   </details>
 </article>
 
 <section class="grid">
+  <!-- Request -->
   <article>
     <h3>Request</h3>
 
@@ -33,34 +37,63 @@
       <input id="endpoint" readonly />
     </label>
 
-    <div id="path-params"></div>
-    <div id="query-params"></div>
+    <!-- Tabs -->
+    <nav>
+      <ul>
+        <li><a href="#" data-tab="params">Params</a></li>
+        <li><a href="#" data-tab="headers">Headers</a></li>
+        <li><a href="#" data-tab="body">Body</a></li>
+      </ul>
+    </nav>
 
-    <label>Body Type
-      <select id="bodyType">
-        <option value="none">None</option>
-        <option value="json">JSON</option>
-      </select>
-    </label>
+    <!-- Params -->
+    <section data-panel="params">
+      <h5>Path Params</h5>
+      <div id="path-params"></div>
 
-    <label>Request Body
-      <textarea id="body" rows="8"></textarea>
-    </label>
+      <h5>Query Params</h5>
+      <div id="query-params"></div>
+    </section>
 
-    <button id="beautify">Beautify JSON</button>
-    <button id="send">Send Request</button>
-    <button class="outline" id="copyCurl">Copy as cURL</button>
+    <!-- Headers -->
+    <section data-panel="headers" hidden>
+      <p><strong>Authorization</strong> is auto-injected</p>
+      <p><code>Content-Type</code> set automatically</p>
+    </section>
+
+    <!-- Body -->
+    <section data-panel="body" hidden>
+      <label>Body Type
+        <select id="bodyType">
+          <option value="none">None</option>
+          <option value="json">JSON</option>
+        </select>
+      </label>
+
+      <label>Request Body
+        <textarea id="body" rows="8"></textarea>
+      </label>
+
+      <button id="beautify">Beautify JSON</button>
+    </section>
+
+    <footer>
+      <button id="send">Send Request</button>
+      <button class="outline" id="copyCurl">Copy as cURL</button>
+    </footer>
   </article>
 
+  <!-- Response -->
   <article id="response-panel">
     <h3>Response</h3>
+
     <ul>
       <li>Status: <strong id="status">—</strong></li>
       <li>Time: <strong id="time">—</strong> ms</li>
       <li>Rate Limit: <strong id="rate">—</strong></li>
     </ul>
 
-    <details>
+    <details open>
       <summary>Response Schema</summary>
       <pre id="schema"></pre>
     </details>

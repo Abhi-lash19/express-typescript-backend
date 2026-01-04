@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title><%= title || "Backend Admin" %></title>
+
     <script>
       (function () {
         const storedTheme = localStorage.getItem("theme");
@@ -14,19 +15,27 @@
           window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light";
-
-        const theme = storedTheme || systemTheme;
-        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.setAttribute(
+          "data-theme",
+          storedTheme || systemTheme
+        );
       })();
     </script>
 
-    <!-- Pico.css -->
     <link
       rel="stylesheet"
       href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"
     />
 
     <style>
+      header.container {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(8px);
+        background: var(--pico-background-color);
+      }
+
       header nav strong {
         font-weight: 600;
         letter-spacing: 0.3px;
@@ -41,10 +50,6 @@
         opacity: 0.6;
       }
 
-      hgroup > p {
-        max-width: 60ch;
-      }
-
       article {
         border-radius: 12px;
       }
@@ -56,6 +61,15 @@
 
       .muted {
         opacity: 0.6;
+      }
+
+      .endpoint-list li {
+        margin-bottom: 0.5rem;
+      }
+
+      pre {
+        max-height: 420px;
+        overflow: auto;
       }
     </style>
   </head>
@@ -69,7 +83,6 @@
 
     <%- include("../partials/footer") %>
 
-    <!-- Global App JS -->
     <script src="/js/app.js"></script>
   </body>
 </html>
