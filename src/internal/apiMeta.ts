@@ -40,8 +40,7 @@ export const apiMeta: ApiEndpointMeta[] = [
     supportsSearch: true,
     params: [
       { name: "page", in: "query", required: false, example: 1 },
-      { name: "limit", in: "query", required: false, example: 10 },
-      { name: "search", in: "query", required: false, example: "meeting" }
+      { name: "limit", in: "query", required: false, example: 10 }
     ],
     responseExample: {
       success: true,

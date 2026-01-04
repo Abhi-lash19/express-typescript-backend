@@ -3,86 +3,72 @@
 <%- include("../../layout/base", {
   title: "API Playground",
   body: `
-    <hgroup>
-      <h1>API Playground</h1>
-      <p>Guided API explorer for backend endpoints</p>
-    </hgroup>
+<hgroup>
+  <h1>API Playground</h1>
+  <p>Swagger-like API explorer for backend testing</p>
+</hgroup>
 
-    <!-- =====================
-         Auth Token
-         ===================== -->
-    <article>
-      <h3>Authorization</h3>
-      <label>
-        Bearer Token (optional for GET)
-        <input id="token" type="text" placeholder="Paste JWT here" />
-      </label>
-      <p class="muted">
-        GET endpoints may work without auth. POST/PUT/DELETE require Supabase JWT.
-      </p>
-    </article>
+<article>
+  <h3>Authorization</h3>
+  <input id="token" placeholder="Bearer JWT (optional for GET)" />
+</article>
 
-    <!-- =====================
-         Endpoint Catalog
-         ===================== -->
-    <article>
-      <h3>Endpoints</h3>
-      <ul id="endpoint-list"></ul>
-    </article>
+<article>
+  <h3>Endpoints</h3>
+  <details open>
+    <summary>Tasks API</summary>
+    <ul id="endpoint-list"></ul>
+  </details>
+</article>
 
-    <!-- =====================
-         Request Builder
-         ===================== -->
-    <article>
-      <h3>Request</h3>
+<section class="grid">
+  <article>
+    <h3>Request</h3>
 
-      <div class="grid">
-        <label>
-          Method
-          <input id="method" readonly />
-        </label>
+    <label>Method
+      <input id="method" readonly />
+    </label>
 
-        <label>
-          Endpoint
-          <input id="endpoint" placeholder="/tasks/1" />
-        </label>
-      </div>
+    <label>Endpoint
+      <input id="endpoint" readonly />
+    </label>
 
-      <label>
-        Body Type
-        <select id="bodyType">
-          <option value="none">None</option>
-          <option value="json">JSON</option>
-          <option value="form">Form (x-www-form-urlencoded)</option>
-        </select>
-      </label>
+    <div id="path-params"></div>
+    <div id="query-params"></div>
 
-      <label>
-        Request Body
-        <textarea id="body" rows="8"></textarea>
-      </label>
+    <label>Body Type
+      <select id="bodyType">
+        <option value="none">None</option>
+        <option value="json">JSON</option>
+      </select>
+    </label>
 
-      <div class="grid">
-        <button id="beautify">Beautify JSON</button>
-        <button id="send">Send Request</button>
-        <button class="outline" id="copyCurl">Copy as cURL</button>
-      </div>
-    </article>
+    <label>Request Body
+      <textarea id="body" rows="8"></textarea>
+    </label>
 
-    <!-- =====================
-         Response
-         ===================== -->
-    <article>
-      <h3>Response</h3>
-      <ul>
-        <li>Status: <strong id="status">—</strong></li>
-        <li>Time: <strong id="time">—</strong> ms</li>
-        <li>Rate Limit: <strong id="rate">—</strong></li>
-      </ul>
-      <pre><code id="response">{}</code></pre>
-    </article>
+    <button id="beautify">Beautify JSON</button>
+    <button id="send">Send Request</button>
+    <button class="outline" id="copyCurl">Copy as cURL</button>
+  </article>
 
-    <script src="/js/playground.js"></script>
-  `
+  <article id="response-panel">
+    <h3>Response</h3>
+    <ul>
+      <li>Status: <strong id="status">—</strong></li>
+      <li>Time: <strong id="time">—</strong> ms</li>
+      <li>Rate Limit: <strong id="rate">—</strong></li>
+    </ul>
+
+    <details>
+      <summary>Response Schema</summary>
+      <pre id="schema"></pre>
+    </details>
+
+    <pre><code id="response">{}</code></pre>
+  </article>
+</section>
+
+<script src="/js/playground.js"></script>
+`
 }) %>
-

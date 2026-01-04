@@ -1,97 +1,97 @@
 // public/js/playground.js
 
 (async function () {
-  const apiListEl = document.getElementById("endpoint-list");
-  const methodEl = document.getElementById("method");
-  const endpointEl = document.getElementById("endpoint");
-  const bodyEl = document.getElementById("body");
-  const bodyTypeEl = document.getElementById("bodyType");
-  const tokenEl = document.getElementById("token");
+  const els = {
+    list: document.getElementById("endpoint-list"),
+    method: document.getElementById("method"),
+    endpoint: document.getElementById("endpoint"),
+    pathParams: document.getElementById("path-params"),
+    queryParams: document.getElementById("query-params"),
+    body: document.getElementById("body"),
+    bodyType: document.getElementById("bodyType"),
+    token: document.getElementById("token"),
+    status: document.getElementById("status"),
+    time: document.getElementById("time"),
+    rate: document.getElementById("rate"),
+    response: document.getElementById("response"),
+    schema: document.getElementById("schema"),
+  };
 
-  const statusEl = document.getElementById("status");
-  const timeEl = document.getElementById("time");
-  const rateEl = document.getElementById("rate");
-  const responseEl = document.getElementById("response");
+  const res = await fetch("/internal/meta/apis");
+  const { apis } = await res.json();
 
-  const sendBtn = document.getElementById("send");
-  const beautifyBtn = document.getElementById("beautify");
-  const copyCurlBtn = document.getElementById("copyCurl");
+  let activeApi = null;
 
-  const metaRes = await fetch("/internal/meta/apis");
-  const { apis } = await metaRes.json();
+  function renderParams(api) {
+    els.pathParams.innerHTML = "";
+    els.queryParams.innerHTML = "";
 
-  function methodColor(method) {
-    return {
-      GET: "blue",
-      POST: "green",
-      PUT: "orange",
-      DELETE: "red"
-    }[method] || "gray";
+    api.params?.forEach(p => {
+      const input = document.createElement("input");
+      input.placeholder = p.name;
+      input.dataset.name = p.name;
+
+      if (p.in === "path") {
+        els.pathParams.append(`Path param (${p.name})`, input);
+      } else {
+        els.queryParams.append(`Query param (${p.name})`, input);
+      }
+    });
+  }
+
+  function buildEndpoint() {
+    let path = activeApi.path;
+    els.pathParams.querySelectorAll("input").forEach(i => {
+      path = path.replace(`{${i.dataset.name}}`, i.value || "");
+    });
+
+    const query = [];
+    els.queryParams.querySelectorAll("input").forEach(i => {
+      if (i.value) query.push(`${i.dataset.name}=${i.value}`);
+    });
+
+    return query.length ? `${path}?${query.join("&")}` : path;
   }
 
   apis.forEach(api => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <strong style="color:${methodColor(api.method)}">${api.method}</strong>
-      ${api.path} — ${api.description}
-    `;
-    li.style.cursor = "pointer";
-
+    li.innerHTML = `<strong>${api.method}</strong> ${api.path} — ${api.description}`;
     li.onclick = () => {
-      methodEl.value = api.method;
-      endpointEl.value = api.path.replace("{id}", api.params?.[0]?.example || "1");
-      bodyTypeEl.value = api.requestBody?.type || "none";
-      bodyEl.value = api.requestBody?.example
+      activeApi = api;
+      els.method.value = api.method;
+      renderParams(api);
+      els.endpoint.value = buildEndpoint();
+      els.body.value = api.requestBody?.example
         ? JSON.stringify(api.requestBody.example, null, 2)
         : "";
+      els.schema.textContent = JSON.stringify(api.responseExample || {}, null, 2);
     };
-
-    apiListEl.appendChild(li);
+    els.list.appendChild(li);
   });
 
-  beautifyBtn.onclick = () => {
-    try {
-      bodyEl.value = JSON.stringify(JSON.parse(bodyEl.value), null, 2);
-    } catch {
-      alert("Invalid JSON");
-    }
-  };
-
-  sendBtn.onclick = async () => {
+  document.getElementById("send").onclick = async () => {
+    els.endpoint.value = buildEndpoint();
     const start = performance.now();
+
     const headers = {};
+    if (els.token.value) headers.Authorization = `Bearer ${els.token.value}`;
+    if (els.bodyType.value === "json") headers["Content-Type"] = "application/json";
 
-    if (tokenEl.value) {
-      headers["Authorization"] = `Bearer ${tokenEl.value}`;
-    }
-
-    if (bodyTypeEl.value === "json") {
-      headers["Content-Type"] = "application/json";
-    }
-
-    const res = await fetch(endpointEl.value, {
-      method: methodEl.value,
+    const r = await fetch(els.endpoint.value, {
+      method: els.method.value,
       headers,
-      body:
-        bodyTypeEl.value === "json" && bodyEl.value
-          ? bodyEl.value
-          : undefined
+      body: els.bodyType.value === "json" ? els.body.value : undefined,
     });
 
-    const end = performance.now();
+    els.status.textContent = r.status;
+    els.time.textContent = Math.round(performance.now() - start);
+    els.rate.textContent = r.headers.get("x-ratelimit-remaining") || "N/A";
+    els.response.textContent = JSON.stringify(await r.json(), null, 2);
 
-    statusEl.textContent = res.status;
-    timeEl.textContent = Math.round(end - start);
-    rateEl.textContent =
-      res.headers.get("x-ratelimit-remaining") || "N/A";
-
-    responseEl.textContent = JSON.stringify(await res.json(), null, 2);
+    document.getElementById("response-panel").scrollIntoView({ behavior: "smooth" });
   };
 
-  copyCurlBtn.onclick = () => {
-    const curl = `curl -X ${methodEl.value} "${location.origin}${endpointEl.value}" \\
-  -H "Authorization: Bearer ${tokenEl.value}"`;
-    navigator.clipboard.writeText(curl);
-    alert("cURL copied");
+  document.getElementById("beautify").onclick = () => {
+    els.body.value = JSON.stringify(JSON.parse(els.body.value), null, 2);
   };
 })();
