@@ -1,7 +1,20 @@
 <!--views/partials/footer.ejs-->
-
-<footer class="container">
+<footer class="container app-footer">
   <small>
-    Express · TypeScript · Supabase · JWT · RLS
+    <strong>Backend Admin Console</strong><br />
+
+    <span class="footer-meta">
+      Express · TypeScript · Supabase · JWT · RLS
+    </span>
+
+    <br />
+
+    <span class="footer-bottom">
+      © <%= new Date().getFullYear() %>
+
+      <span class="env-badge env-<%= env %>">
+        <%= env.toUpperCase() %>
+      </span>
+    </span>
   </small>
 </footer>

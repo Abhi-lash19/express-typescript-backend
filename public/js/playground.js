@@ -16,6 +16,8 @@
     response: document.getElementById("response"),
     schema: document.getElementById("schema"),
     responsePanel: document.getElementById("response-panel"),
+    authTypeSelect: document.getElementById("authType"),
+    bearerPanel: document.getElementById("bearer-panel"),
   };
 
   const METHOD_COLOR = {
@@ -31,7 +33,7 @@
   let activeApi = null;
 
   /* -------------------------
-   * Render Params (Postman-like)
+   * Render Params
    * ------------------------- */
   function renderParams(api) {
     els.pathParams.innerHTML = "";
@@ -57,7 +59,7 @@
   }
 
   /* -------------------------
-   * Build Final Endpoint
+   * Build Endpoint
    * ------------------------- */
   function buildEndpoint() {
     let path = activeApi.path;
@@ -68,14 +70,15 @@
 
     const query = [];
     els.queryParams.querySelectorAll("input").forEach((i) => {
-      if (i.value) query.push(`${i.dataset.name}=${encodeURIComponent(i.value)}`);
+      if (i.value)
+        query.push(`${i.dataset.name}=${encodeURIComponent(i.value)}`);
     });
 
     return query.length ? `${path}?${query.join("&")}` : path;
   }
 
   /* -------------------------
-   * Render Endpoint List
+   * Endpoint List
    * ------------------------- */
   apis.forEach((api) => {
     const li = document.createElement("li");
@@ -108,6 +111,18 @@
   });
 
   /* -------------------------
+   * Authorization UX
+   * ------------------------- */
+  function updateAuthUI() {
+    if (!els.authTypeSelect) return;
+    els.bearerPanel.style.display =
+      els.authTypeSelect.value === "bearer" ? "block" : "none";
+  }
+
+  els.authTypeSelect?.addEventListener("change", updateAuthUI);
+  updateAuthUI();
+
+  /* -------------------------
    * Send Request
    * ------------------------- */
   document.getElementById("send").onclick = async () => {
@@ -115,8 +130,16 @@
     const start = performance.now();
 
     const headers = {};
-    if (els.token.value) headers.Authorization = `Bearer ${els.token.value}`;
-    if (els.bodyType.value === "json") headers["Content-Type"] = "application/json";
+    if (
+      els.authTypeSelect?.value === "bearer" &&
+      els.token.value
+    ) {
+      headers.Authorization = `Bearer ${els.token.value}`;
+    }
+
+    if (els.bodyType.value === "json") {
+      headers["Content-Type"] = "application/json";
+    }
 
     const res = await fetch(els.endpoint.value, {
       method: els.method.value,
@@ -126,11 +149,15 @@
 
     els.status.textContent = res.status;
     els.time.textContent = Math.round(performance.now() - start);
-    els.rate.textContent = res.headers.get("x-ratelimit-remaining") || "N/A";
+    els.rate.textContent =
+      res.headers.get("x-ratelimit-remaining") || "N/A";
 
     els.response.textContent = JSON.stringify(await res.json(), null, 2);
 
-    els.responsePanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    els.responsePanel.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   };
 
   /* -------------------------
@@ -145,7 +172,7 @@
   };
 
   /* -------------------------
-   * Tabs Logic
+   * Tabs
    * ------------------------- */
   document.querySelectorAll("[data-tab]").forEach((tab) => {
     tab.onclick = (e) => {

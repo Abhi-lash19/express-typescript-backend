@@ -11,8 +11,30 @@
 <!-- Authorization -->
 <article>
   <h3>Authorization</h3>
-  <input id="token" placeholder="Bearer JWT (optional for GET)" />
-  <small>POST / PUT / DELETE require Supabase JWT</small>
+
+  <label>
+    Auth Type
+    <select id="authType">
+      <option value="none">No Auth</option>
+      <option value="bearer" selected>Bearer Token</option>
+    </select>
+  </label>
+
+  <div id="bearer-panel">
+    <label>
+      Bearer Token
+      <input
+        id="token"
+        placeholder="Paste Supabase JWT here"
+        autocomplete="off"
+      />
+    </label>
+
+    <small class="muted">
+      GET requests may work without auth.
+      POST / PUT / DELETE require a valid Supabase JWT.
+    </small>
+  </div>
 </article>
 
 <!-- Endpoints -->

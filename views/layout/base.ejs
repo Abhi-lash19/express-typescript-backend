@@ -1,5 +1,5 @@
 <!--views/layout/base.ejs-->
-
+<!--views/layout/base.ejs-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -45,9 +45,49 @@
         margin-top: 2.5rem;
       }
 
-      footer {
-        margin-top: 4rem;
-        opacity: 0.6;
+      footer.app-footer {
+        margin-top: 6rem;
+        padding: 2.5rem 0;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        opacity: 0.75;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      footer.app-footer small {
+        line-height: 1.7;
+        letter-spacing: 0.3px;
+      }
+
+      .footer-meta {
+        opacity: 0.7;
+      }
+
+      .footer-bottom {
+        display: inline-flex;
+        gap: 0.75rem;
+        align-items: center;
+        margin-top: 0.25rem;
+      }
+
+      .env-badge {
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+      }
+
+      .env-production {
+        background: #0f5132;
+        color: #d1e7dd;
+      }
+
+      .env-development {
+        background: #084298;
+        color: #cfe2ff;
       }
 
       article {
