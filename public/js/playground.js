@@ -1,110 +1,97 @@
 // public/js/playground.js
 
-(function () {
+(async function () {
+  const apiListEl = document.getElementById("endpoint-list");
   const methodEl = document.getElementById("method");
   const endpointEl = document.getElementById("endpoint");
   const bodyEl = document.getElementById("body");
+  const bodyTypeEl = document.getElementById("bodyType");
+  const tokenEl = document.getElementById("token");
 
   const statusEl = document.getElementById("status");
   const timeEl = document.getElementById("time");
   const rateEl = document.getElementById("rate");
   const responseEl = document.getElementById("response");
-  const recentEl = document.getElementById("recent");
 
   const sendBtn = document.getElementById("send");
+  const beautifyBtn = document.getElementById("beautify");
   const copyCurlBtn = document.getElementById("copyCurl");
 
-  let recentRequests = [];
+  const metaRes = await fetch("/internal/meta/apis");
+  const { apis } = await metaRes.json();
 
-  function getToken() {
-    return localStorage.getItem("auth_token");
+  function methodColor(method) {
+    return {
+      GET: "blue",
+      POST: "green",
+      PUT: "orange",
+      DELETE: "red"
+    }[method] || "gray";
   }
 
-  function addRecent(method, endpoint) {
-    recentRequests.unshift(`${method} ${endpoint}`);
-    recentRequests = recentRequests.slice(0, 5);
+  apis.forEach(api => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong style="color:${methodColor(api.method)}">${api.method}</strong>
+      ${api.path} — ${api.description}
+    `;
+    li.style.cursor = "pointer";
 
-    recentEl.innerHTML = "";
-    recentRequests.forEach((r) => {
-      const li = document.createElement("li");
-      li.textContent = r;
-      recentEl.appendChild(li);
-    });
-  }
-
-  async function sendRequest() {
-    const method = methodEl.value;
-    const endpoint = endpointEl.value.trim();
-    const body = bodyEl.value.trim();
-
-    if (!endpoint.startsWith("/")) {
-      alert("Endpoint must start with /");
-      return;
-    }
-
-    const options = {
-      method,
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-        "Content-Type": "application/json",
-      },
+    li.onclick = () => {
+      methodEl.value = api.method;
+      endpointEl.value = api.path.replace("{id}", api.params?.[0]?.example || "1");
+      bodyTypeEl.value = api.requestBody?.type || "none";
+      bodyEl.value = api.requestBody?.example
+        ? JSON.stringify(api.requestBody.example, null, 2)
+        : "";
     };
 
-    if (body && method !== "GET") {
-      try {
-        options.body = JSON.stringify(JSON.parse(body));
-      } catch {
-        alert("Invalid JSON body");
-        return;
-      }
-    }
+    apiListEl.appendChild(li);
+  });
 
-    const start = performance.now();
-
+  beautifyBtn.onclick = () => {
     try {
-      const res = await fetch(endpoint, options);
-      const end = performance.now();
-
-      const text = await res.text();
-      let json;
-      try {
-        json = JSON.parse(text);
-      } catch {
-        json = text;
-      }
-
-      statusEl.textContent = res.status;
-      timeEl.textContent = Math.round(end - start);
-
-      const limit = res.headers.get("x-ratelimit-limit");
-      const remaining = res.headers.get("x-ratelimit-remaining");
-      rateEl.textContent = limit
-        ? `${remaining}/${limit}`
-        : "N/A";
-
-      responseEl.textContent = JSON.stringify(json, null, 2);
-      addRecent(method, endpoint);
-    } catch (err) {
-      responseEl.textContent = err.message;
+      bodyEl.value = JSON.stringify(JSON.parse(bodyEl.value), null, 2);
+    } catch {
+      alert("Invalid JSON");
     }
-  }
+  };
 
-  function copyAsCurl() {
-    const method = methodEl.value;
-    const endpoint = endpointEl.value.trim();
-    const body = bodyEl.value.trim();
-    const token = getToken();
+  sendBtn.onclick = async () => {
+    const start = performance.now();
+    const headers = {};
 
-    let curl = `curl -X ${method} "${window.location.origin}${endpoint}" \\\n  -H "Authorization: Bearer ${token}" \\\n  -H "Content-Type: application/json"`;
-
-    if (body && method !== "GET") {
-      curl += ` \\\n  -d '${body}'`;
+    if (tokenEl.value) {
+      headers["Authorization"] = `Bearer ${tokenEl.value}`;
     }
 
+    if (bodyTypeEl.value === "json") {
+      headers["Content-Type"] = "application/json";
+    }
+
+    const res = await fetch(endpointEl.value, {
+      method: methodEl.value,
+      headers,
+      body:
+        bodyTypeEl.value === "json" && bodyEl.value
+          ? bodyEl.value
+          : undefined
+    });
+
+    const end = performance.now();
+
+    statusEl.textContent = res.status;
+    timeEl.textContent = Math.round(end - start);
+    rateEl.textContent =
+      res.headers.get("x-ratelimit-remaining") || "N/A";
+
+    responseEl.textContent = JSON.stringify(await res.json(), null, 2);
+  };
+
+  copyCurlBtn.onclick = () => {
+    const curl = `curl -X ${methodEl.value} "${location.origin}${endpointEl.value}" \\
+  -H "Authorization: Bearer ${tokenEl.value}"`;
     navigator.clipboard.writeText(curl);
-    alert("cURL copied to clipboard");
-  }
-
-  sendBtn.addEventListener("click", sendRequest);
-  copyCurlBtn.addEventListener("click", copyAsCurl);
+    alert("cURL copied");
+  };
 })();

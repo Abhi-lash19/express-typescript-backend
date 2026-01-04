@@ -5,8 +5,30 @@
   body: `
     <hgroup>
       <h1>API Playground</h1>
-      <p>Swagger-like API explorer for authenticated backend testing</p>
+      <p>Guided API explorer for backend endpoints</p>
     </hgroup>
+
+    <!-- =====================
+         Auth Token
+         ===================== -->
+    <article>
+      <h3>Authorization</h3>
+      <label>
+        Bearer Token (optional for GET)
+        <input id="token" type="text" placeholder="Paste JWT here" />
+      </label>
+      <p class="muted">
+        GET endpoints may work without auth. POST/PUT/DELETE require Supabase JWT.
+      </p>
+    </article>
+
+    <!-- =====================
+         Endpoint Catalog
+         ===================== -->
+    <article>
+      <h3>Endpoints</h3>
+      <ul id="endpoint-list"></ul>
+    </article>
 
     <!-- =====================
          Request Builder
@@ -17,64 +39,47 @@
       <div class="grid">
         <label>
           Method
-          <select id="method">
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>DELETE</option>
-          </select>
+          <input id="method" readonly />
         </label>
 
         <label>
           Endpoint
-          <input
-            id="endpoint"
-            type="text"
-            placeholder="/tasks?page=1&limit=10"
-            value="/tasks"
-          />
+          <input id="endpoint" placeholder="/tasks/1" />
         </label>
       </div>
 
       <label>
-        JSON Body (optional)
-        <textarea
-          id="body"
-          rows="6"
-          placeholder='{
-  "title": "My task",
-  "completed": false
-}'
-        ></textarea>
+        Body Type
+        <select id="bodyType">
+          <option value="none">None</option>
+          <option value="json">JSON</option>
+          <option value="form">Form (x-www-form-urlencoded)</option>
+        </select>
+      </label>
+
+      <label>
+        Request Body
+        <textarea id="body" rows="8"></textarea>
       </label>
 
       <div class="grid">
+        <button id="beautify">Beautify JSON</button>
         <button id="send">Send Request</button>
         <button class="outline" id="copyCurl">Copy as cURL</button>
       </div>
     </article>
 
     <!-- =====================
-         Response Viewer
+         Response
          ===================== -->
     <article>
       <h3>Response</h3>
-
       <ul>
-        <li><strong>Status:</strong> <span id="status">—</span></li>
-        <li><strong>Time:</strong> <span id="time">—</span> ms</li>
-        <li><strong>Rate Limit:</strong> <span id="rate">—</span></li>
+        <li>Status: <strong id="status">—</strong></li>
+        <li>Time: <strong id="time">—</strong> ms</li>
+        <li>Rate Limit: <strong id="rate">—</strong></li>
       </ul>
-
       <pre><code id="response">{}</code></pre>
-    </article>
-
-    <!-- =====================
-         Recent Requests
-         ===================== -->
-    <article>
-      <h3>Recent Requests</h3>
-      <ul id="recent"></ul>
     </article>
 
     <script src="/js/playground.js"></script>
