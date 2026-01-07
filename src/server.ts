@@ -24,6 +24,17 @@ import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
 
 const app = express();
+/**
+ * ------------------------
+ * GLOBAL CONTRACT NOTES
+ * ------------------------
+ *
+ * - Authentication is JWT-based and stateless
+ * - All API routes assume Supabase-issued tokens
+ * - Ownership is enforced downstream (service + RLS)
+ * - OpenAPI will later reflect these guarantees
+ */
+
 
 /**
  * ------------------------

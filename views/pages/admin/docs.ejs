@@ -10,13 +10,14 @@
 
     <article>
       <p>
-        This documentation explains how the backend works internally,
-        including authentication flow, authorization boundaries,
-        and data access rules.
+        All API access requires authentication using Supabase-issued JWTs.
+        Any authenticated user may read tasks, but only task owners may
+        create, update, or delete them.
       </p>
 
       <p>
-        Intended for developers, reviewers, and interview demos.
+        Ownership is enforced at multiple layers, including database-level
+        Row Level Security (RLS).
       </p>
 
       <p><em>Phase 5 implementation</em></p>

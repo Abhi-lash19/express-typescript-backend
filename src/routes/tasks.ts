@@ -14,11 +14,16 @@ import { supabaseAuth } from "../middleware/supabaseAuth";
 export const taskRouter = Router();
 
 /**
- * ALL routes require Supabase authentication
- * Reason:
- * - Tasks are user-owned
- * - RLS depends on authenticated user
+ * ACCESS MODEL (IMPORTANT)
+ *
+ * - All routes require authentication
+ * - Any authenticated user may READ tasks
+ * - Only task owners may CREATE / UPDATE / DELETE
+ *
+ * Ownership failures are intentionally surfaced as 404
+ * to avoid leaking resource existence.
  */
+
 taskRouter.use(supabaseAuth);
 
 /**

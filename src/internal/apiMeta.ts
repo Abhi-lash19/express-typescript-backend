@@ -35,7 +35,7 @@ export const apiMeta: ApiEndpointMeta[] = [
     method: "GET",
     path: "/tasks",
     description: "List tasks with optional pagination and search",
-    authRequired: false,
+    authRequired: true,
     supportsPagination: true,
     supportsSearch: true,
     params: [
@@ -52,7 +52,7 @@ export const apiMeta: ApiEndpointMeta[] = [
     method: "GET",
     path: "/tasks/{id}",
     description: "Get task by ID",
-    authRequired: false,
+    authRequired: true,
     params: [
       { name: "id", in: "path", required: true, example: "1" }
     ],

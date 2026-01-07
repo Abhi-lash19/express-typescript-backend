@@ -5,6 +5,19 @@ import { supabase } from "../config/supabase";
 import { AppError } from "../errors/AppError";
 import { createSupabaseUserClient } from "../config/supabaseUser";
 
+/**
+ * Supabase Authentication Middleware
+ *
+ * Contract:
+ * - Expects Supabase-issued JWT in Authorization header
+ * - Stateless (no sessions)
+ * - Attaches:
+ *   - req.user (identity)
+ *   - req.supabase (user-scoped client for RLS)
+ *
+ * Failure always results in 401
+ */
+
 export async function supabaseAuth(
   req: Request,
   _res: Response,
