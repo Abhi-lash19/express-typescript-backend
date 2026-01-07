@@ -30,7 +30,20 @@
 
   window.logout = function () {
     localStorage.removeItem(TOKEN_KEY);
-    window.location.href = "/login";
+    window.location.href = "/admin/login";
+  };
+
+  /* -------------------------
+   * Signup Helper (Phase 1B)
+   * ------------------------- */
+  window.signupUser = async function (email, password) {
+    const res = await fetch("/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    return res.json();
   };
 
   /* -------------------------
