@@ -22,6 +22,8 @@ import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
+import { authRouter } from "./routes/auth";
+
 
 const app = express();
 /**
@@ -109,6 +111,11 @@ app.get("/", (req, res) => {
     text1: "Production-ready Express + TypeScript backend",
   });
 });
+
+/**
+ * Authentication Routes
+ */
+app.use("/auth", authRouter);
 
 /**
  * Public API (Versioned)
