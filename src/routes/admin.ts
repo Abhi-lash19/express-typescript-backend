@@ -18,6 +18,12 @@ adminRouter.get("/dashboard", (_req, res) => {
   });
 });
 
+adminRouter.get("/login", (_req, res) => {
+  res.render("pages/admin/login", {
+    title: "Login / Signup",
+  });
+});
+
 adminRouter.get("/playground", (_req, res) => {
   res.render("pages/admin/playground", {
     title: "API Playground",
