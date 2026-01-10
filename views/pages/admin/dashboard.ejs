@@ -8,27 +8,26 @@
       <p>Read-only backend system & security overview</p>
     </hgroup>
 
-    <p>
-      <a href="/admin/login">Create Account / Login</a>
-    </p>
+    <article>
+      <h3>🔐 Authentication for Full Access</h3>
+      <p class="muted">
+        You can explore system health, documentation, and read-only APIs without authentication.
+        To fully test write APIs (POST / PUT / DELETE) and generate a user-scoped JWT,
+        click <strong>Login / Get JWT</strong> in the top-right corner.
+      </p>
+    </article>
 
-    <!-- =====================
-         System Health
-         ===================== -->
     <section>
       <h3>System Health</h3>
-
       <section class="grid">
         <article>
           <h4>API Status</h4>
           <p class="metric" id="api-status">—</p>
         </article>
-
         <article>
           <h4>Uptime</h4>
           <p class="metric" id="api-uptime">—</p>
         </article>
-
         <article>
           <h4>Environment</h4>
           <p class="metric" id="api-env">—</p>
@@ -36,52 +35,16 @@
       </section>
     </section>
 
-    <!-- =====================
-         Auth Context
-         ===================== -->
     <section>
       <h3>Authenticated Context</h3>
-
       <article>
         <p class="muted">
-          This information is derived from the JWT used to call the backend APIs.
+          This information is derived from the JWT used to call backend APIs.
         </p>
-
         <ul>
-          <li><strong>User Email:</strong> <span id="user-email">—</span></li>
-          <li><strong>Auth Provider:</strong> <span id="auth-provider">—</span></li>
+          <li><strong>User Email:</strong> —</li>
+          <li><strong>Auth Provider:</strong> —</li>
           <li><strong>Token Scope:</strong> User-level (no admin override)</li>
-        </ul>
-      </article>
-    </section>
-
-    <!-- =====================
-         Security Model
-         ===================== -->
-    <section>
-      <h3>Backend Security Model</h3>
-
-      <article>
-        <ul>
-          <li>
-            <strong>JWT Authentication:</strong>
-            Every request is authenticated using a Supabase-issued JWT.
-          </li>
-
-          <li>
-            <strong>Backend Filtering:</strong>
-            APIs never trust client input and always scope data by user ID.
-          </li>
-
-          <li>
-            <strong>Row Level Security (RLS):</strong>
-            Even if an API bug exists, the database enforces per-user access.
-          </li>
-
-          <li>
-            <strong>Read-only Admin UI:</strong>
-            This dashboard cannot mutate data or bypass backend rules.
-          </li>
         </ul>
       </article>
     </section>

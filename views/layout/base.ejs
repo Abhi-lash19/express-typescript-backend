@@ -35,92 +35,99 @@
         background: var(--pico-background-color);
       }
 
-      header nav strong {
-        font-weight: 600;
-        letter-spacing: 0.3px;
-      }
-
       main.container {
         margin-top: 2.5rem;
       }
 
-      footer.app-footer {
-        margin-top: 6rem;
-        padding: 2.5rem 0;
-        display: flex;
-        justify-content: center;
-        text-align: center;
-        opacity: 0.75;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      footer.app-footer small {
-        line-height: 1.7;
-        letter-spacing: 0.3px;
-      }
-
-      .footer-meta {
-        opacity: 0.7;
-      }
-
-      .footer-bottom {
-        display: inline-flex;
-        gap: 0.75rem;
-        align-items: center;
-        margin-top: 0.25rem;
-      }
-
-      .env-badge {
-        padding: 0.15rem 0.55rem;
-        border-radius: 999px;
-        font-size: 0.65rem;
-        font-weight: 600;
-        letter-spacing: 0.4px;
-        text-transform: uppercase;
-      }
-
-      .env-production {
-        background: #0f5132;
-        color: #d1e7dd;
-      }
-
-      .env-development {
-        background: #084298;
-        color: #cfe2ff;
-      }
-
-      article {
-        border-radius: 12px;
-      }
-
-      .metric {
-        font-size: 1.25rem;
-        font-weight: 600;
-      }
-
       .muted {
-        opacity: 0.6;
+        opacity: 0.65;
       }
 
-      .endpoint-list li {
-        margin-bottom: 0.5rem;
+      /* ---------- Modal ---------- */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
       }
 
-      pre {
-        max-height: 420px;
-        overflow: auto;
+      .modal {
+        background: var(--pico-background-color);
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 520px;
+        width: 100%;
       }
     </style>
   </head>
 
   <body>
-    <%- include("../partials/nav") %>
+    <header class="container">
+      <nav>
+        <ul>
+          <li><strong>Backend Admin</strong></li>
+        </ul>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/admin/dashboard">Admin</a></li>
+          <li><a href="/admin/playground">API Playground</a></li>
+          <li><a href="/admin/docs">Docs</a></li>
+          <li>
+            <button onclick="openAuthModal()">Login / Get JWT</button>
+          </li>
+        </ul>
+      </nav>
+    </header>
 
     <main class="container">
       <%- body %>
     </main>
 
-    <%- include("../partials/footer") %>
+    <footer class="app-footer">
+      <small class="muted">Express + TypeScript Backend Demo</small>
+    </footer>
+
+    <!-- =====================
+         Auth Modal
+         ===================== -->
+    <div class="modal-backdrop" id="auth-modal">
+      <div class="modal">
+        <h3>Create Account / Login</h3>
+
+        <p class="muted">
+          This is a demo authentication flow used to generate a user-scoped JWT
+          for testing write APIs.
+        </p>
+
+        <ul class="muted">
+          <li>Email can be any valid-looking address</li>
+          <li>Password must be strong (10+ chars, uppercase, number, symbol)</li>
+          <li>Please remember these credentials — they are used to generate JWTs</li>
+        </ul>
+
+        <form id="auth-form">
+          <label>
+            Email
+            <input type="email" id="auth-email" required />
+          </label>
+
+          <label>
+            Password
+            <input type="password" id="auth-password" required />
+          </label>
+
+          <button type="submit">Create Account</button>
+          <button type="button" class="secondary" onclick="closeAuthModal()">
+            Cancel
+          </button>
+        </form>
+
+        <p id="auth-message" class="muted"></p>
+      </div>
+    </div>
 
     <script src="/js/app.js"></script>
   </body>

@@ -1,70 +1,57 @@
 // public/js/app.js
 
 (function () {
-  const TOKEN_KEY = "auth_token";
-
   /* -------------------------
-   * Theme Handling
+   * Modal Controls
    * ------------------------- */
-  const storedTheme = localStorage.getItem("theme");
-  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  window.openAuthModal = function () {
+    document.getElementById("auth-modal").style.display = "flex";
+  };
 
-  const theme = storedTheme || systemTheme;
-  document.documentElement.setAttribute("data-theme", theme);
-
-  window.toggleTheme = function () {
-    const current = document.documentElement.getAttribute("data-theme");
-    const next = current === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
+  window.closeAuthModal = function () {
+    document.getElementById("auth-modal").style.display = "none";
+    document.getElementById("auth-message").textContent = "";
   };
 
   /* -------------------------
-   * Auth Helpers
+   * Signup Handler
    * ------------------------- */
-  window.getToken = function () {
-    return localStorage.getItem(TOKEN_KEY);
-  };
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("auth-form");
+    if (!form) return;
 
-  window.logout = function () {
-    localStorage.removeItem(TOKEN_KEY);
-    window.location.href = "/admin/login";
-  };
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  /* -------------------------
-   * Signup Helper (Phase 1B)
-   * ------------------------- */
-  window.signupUser = async function (email, password) {
-    const res = await fetch("/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      const email = document.getElementById("auth-email").value;
+      const password = document.getElementById("auth-password").value;
+      const msg = document.getElementById("auth-message");
+
+      msg.textContent = "Creating account...";
+
+      try {
+        const res = await fetch("/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          msg.textContent = data?.error?.message || "Signup failed";
+          return;
+        }
+
+        msg.textContent =
+          "Account created successfully. You can now use the API Playground.";
+
+        setTimeout(() => {
+          closeAuthModal();
+        }, 1200);
+      } catch {
+        msg.textContent = "Network error. Please try again.";
+      }
     });
-
-    return res.json();
-  };
-
-  /* -------------------------
-   * Fetch Wrapper
-   * ------------------------- */
-  window.apiFetch = async function (url, options = {}) {
-    const token = getToken();
-
-    const res = await fetch(url, {
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    });
-
-    if (res.status === 401) {
-      logout();
-      throw new Error("Unauthorized");
-    }
-
-    return res;
-  };
+  });
 })();
