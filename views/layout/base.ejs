@@ -92,6 +92,21 @@
         max-width: 520px;
         width: 100%;
       }
+
+      .compact-input {
+        max-width: 360px;
+      }
+
+      .danger {
+        color: #c62828;
+        font-weight: bold;
+      }
+
+      .side-by-side {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
     </style>
   </head>
 
@@ -132,8 +147,7 @@
         <h3>Create Account / Login</h3>
 
         <p class="muted">
-          Demo authentication used to generate a user-scoped JWT for testing
-          write APIs.
+          Demo authentication used to generate a user-scoped JWT for testing write APIs.
         </p>
 
         <ul class="muted">
@@ -145,25 +159,33 @@
         <form id="auth-form">
           <label>
             Email
-            <input type="email" id="auth-email" required />
+            <input type="email" id="auth-email" class="compact-input" required />
           </label>
 
           <label>
             Password
             <div class="password-wrapper">
-              <input type="password" id="auth-password" required />
-              <span
-                class="toggle-password"
-                onclick="togglePasswordVisibility()"
-                >👁</span
-              >
+              <input
+                type="password"
+                id="auth-password"
+                class="compact-input"
+                required
+              />
+              <span class="toggle-password" onclick="togglePasswordVisibility()">👁</span>
             </div>
           </label>
 
           <ul class="password-hints" id="password-hints"></ul>
 
           <button type="submit">Create Account</button>
-          <button type="button" class="secondary" onclick="closeAuthModal()">
+
+          <!-- FIXED CANCEL -->
+          <button
+            type="button"
+            class="danger"
+            onclick="closeAuthModal()"
+            style="margin-top:0.5rem"
+          >
             Cancel
           </button>
         </form>

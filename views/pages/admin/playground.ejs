@@ -12,25 +12,17 @@
      Generate JWT
      ===================== -->
 <article>
-  <h3>🔐 Generate JWT (Required for Write APIs)</h3>
+  <h3>🔐 Generate JWT</h3>
 
-  <p class="muted">
-    Generate a user-scoped JWT using email & password.
-    This token will be automatically injected into requests.
-  </p>
-
-  <label>
-    Email
-    <input id="pg-email" type="email" placeholder="user@test.dev" />
+  <label>Email
+    <input id="pg-email" class="compact-input" />
   </label>
 
-  <label>
-    Password
-    <input id="pg-password" type="password" placeholder="Strong password" />
+  <label>Password
+    <input id="pg-password" type="password" class="compact-input" />
   </label>
 
   <button id="generate-token">Generate Token</button>
-
   <p id="pg-auth-message" class="muted"></p>
 </article>
 
@@ -40,7 +32,7 @@
 
   <label>
     Auth Type
-    <select id="authType">
+    <select id="authType" class="compact-input">
       <option value="none">No Auth</option>
       <option value="bearer" selected>Bearer Token</option>
     </select>
@@ -51,41 +43,38 @@
       Bearer Token
       <input
         id="token"
-        placeholder="Paste Supabase JWT here"
+        class="compact-input"
+        placeholder="Paste Supabase JWT"
         autocomplete="off"
       />
     </label>
 
     <small class="muted">
-      GET requests may work without auth.
-      POST / PUT / DELETE require a valid Supabase JWT.
+      GET may work without auth.
+      POST / PUT / DELETE require JWT.
     </small>
   </div>
 </article>
 
-<article>
-  <h3>📘 Data Ownership Rules</h3>
+<!-- SIDE BY SIDE -->
+<article class="side-by-side">
+  <div>
+    <h3>📘 Data Ownership Rules</h3>
+    <ul class="muted">
+      <li>Anyone can read all tasks</li>
+      <li>Creating assigns ownership to your JWT</li>
+      <li>Only owners can update/delete</li>
+      <li>Enforced at API + RLS level</li>
+    </ul>
+  </div>
 
-  <ul class="muted">
-    <li>Anyone can <strong>read</strong> all tasks</li>
-    <li>Creating a task assigns ownership to your JWT</li>
-    <li>You can only <strong>update or delete</strong> tasks you created</li>
-    <li>Guessing another task ID will fail</li>
-    <li>Enforced at both API and database (RLS) level</li>
-  </ul>
-</article>
-
-<!-- Endpoints -->
-<article>
-  <h3>Endpoints</h3>
-  <details open>
-    <summary>Tasks API</summary>
+  <div>
+    <h3>Endpoints</h3>
     <ul id="endpoint-list" class="endpoint-list"></ul>
-  </details>
+  </div>
 </article>
 
 <section class="grid">
-  <!-- Request -->
   <article>
     <h3>Request</h3>
 
@@ -94,7 +83,8 @@
     </label>
 
     <label>Endpoint
-      <input id="endpoint" readonly />
+      <!-- FIXED: editable -->
+      <input id="endpoint" />
     </label>
 
     <!-- Tabs -->
@@ -117,8 +107,8 @@
 
     <!-- Headers -->
     <section data-panel="headers" hidden>
-      <p><strong>Authorization</strong> is auto-injected</p>
-      <p><code>Content-Type</code> set automatically</p>
+      <p><strong>Authorization</strong> auto-injected</p>
+      <p><code>Content-Type</code> automatic</p>
     </section>
 
     <!-- Body -->

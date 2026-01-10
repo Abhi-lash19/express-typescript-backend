@@ -71,7 +71,7 @@
    * Build Endpoint
    * ------------------------- */
   function buildEndpoint() {
-    let path = activeApi.path;
+    let path = els.endpoint.value || activeApi.path;
 
     els.pathParams.querySelectorAll("input").forEach((i) => {
       path = path.replace(`{${i.dataset.name}}`, i.value || "");
@@ -114,7 +114,17 @@
         ? JSON.stringify(api.requestBody.example, null, 2)
         : "";
 
-      els.schema.textContent = JSON.stringify(api.responseExample || {}, null, 2);
+      els.schema.textContent = JSON.stringify(
+        {
+          note:
+            api.method === "GET" && api.path === "/tasks"
+              ? "List endpoints return { data: { tasks: [] }, meta }"
+              : "Single-resource endpoints return { data: { task } }",
+          example: api.responseExample || {},
+        },
+        null,
+        2
+      );
     };
 
     els.list.appendChild(li);
@@ -170,10 +180,7 @@
 
     els.response.textContent = JSON.stringify(await res.json(), null, 2);
 
-    els.responsePanel.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
+    els.responsePanel.scrollIntoView({ behavior: "smooth" });
   };
 
   /* -------------------------
@@ -190,39 +197,37 @@
   /* -------------------------
    * Generate Token (Auth → Playground)
    * ------------------------- */
-  document
-    .getElementById("generate-token")
-    ?.addEventListener("click", async () => {
-      const email = document.getElementById("pg-email").value;
-      const password = document.getElementById("pg-password").value;
-      const msg = document.getElementById("pg-auth-message");
+  document.getElementById("generate-token")?.addEventListener("click", async () => {
+    const email = document.getElementById("pg-email").value;
+    const password = document.getElementById("pg-password").value;
+    const msg = document.getElementById("pg-auth-message");
 
-      msg.textContent = "Generating token...";
+    msg.textContent = "Generating token...";
 
-      try {
-        const res = await fetch("/auth/token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        });
+    try {
+      const res = await fetch("/auth/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-        const data = await res.json();
+      const data = await res.json();
 
-        if (!res.ok) {
-          msg.textContent = data?.error?.message || "Invalid credentials";
-          return;
-        }
-
-        els.token.value = data.token;
-        localStorage.setItem("playground_token", data.token);
-        els.authTypeSelect.value = "bearer";
-        updateAuthUI();
-
-        msg.textContent = "Token generated and applied successfully.";
-      } catch {
-        msg.textContent = "Network error while generating token.";
+      if (!res.ok) {
+        msg.textContent = data?.error?.message || "Invalid credentials";
+        return;
       }
-    });
+
+      els.token.value = data.token;
+      localStorage.setItem("playground_token", data.token);
+      els.authTypeSelect.value = "bearer";
+      updateAuthUI();
+
+      msg.textContent = "Token generated and applied successfully.";
+    } catch {
+      msg.textContent = "Network error while generating token.";
+    }
+  });
 
   /* -------------------------
    * Tabs
