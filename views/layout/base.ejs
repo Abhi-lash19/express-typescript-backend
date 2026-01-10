@@ -43,6 +43,37 @@
         opacity: 0.65;
       }
 
+      .error-text {
+        color: #c62828;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+      }
+
+      .success-text {
+        color: #2e7d32;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      .password-hints li {
+        color: #c62828;
+        font-size: 0.8rem;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 0.9rem;
+        opacity: 0.6;
+      }
+
       /* ---------- Modal ---------- */
       .modal-backdrop {
         position: fixed;
@@ -76,6 +107,9 @@
           <li><a href="/admin/playground">API Playground</a></li>
           <li><a href="/admin/docs">Docs</a></li>
           <li>
+            <button onclick="toggleTheme()" title="Toggle theme">🌗</button>
+          </li>
+          <li>
             <button onclick="openAuthModal()">Login / Get JWT</button>
           </li>
         </ul>
@@ -98,14 +132,14 @@
         <h3>Create Account / Login</h3>
 
         <p class="muted">
-          This is a demo authentication flow used to generate a user-scoped JWT
-          for testing write APIs.
+          Demo authentication used to generate a user-scoped JWT for testing
+          write APIs.
         </p>
 
         <ul class="muted">
           <li>Email can be any valid-looking address</li>
-          <li>Password must be strong (10+ chars, uppercase, number, symbol)</li>
-          <li>Please remember these credentials — they are used to generate JWTs</li>
+          <li>Password must be strong</li>
+          <li>Please remember credentials — used to generate JWTs</li>
         </ul>
 
         <form id="auth-form">
@@ -116,8 +150,17 @@
 
           <label>
             Password
-            <input type="password" id="auth-password" required />
+            <div class="password-wrapper">
+              <input type="password" id="auth-password" required />
+              <span
+                class="toggle-password"
+                onclick="togglePasswordVisibility()"
+                >👁</span
+              >
+            </div>
           </label>
+
+          <ul class="password-hints" id="password-hints"></ul>
 
           <button type="submit">Create Account</button>
           <button type="button" class="secondary" onclick="closeAuthModal()">
