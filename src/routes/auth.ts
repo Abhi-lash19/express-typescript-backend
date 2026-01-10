@@ -1,5 +1,4 @@
 // src/routes/auth.ts
-
 import { Router } from "express";
 import { validate } from "../validation/validate";
 import { signupSchema } from "../validation/auth.schema";
@@ -19,4 +18,16 @@ authRouter.post(
   authRateLimiter,
   validate({ body: signupSchema }),
   authController.signup
+);
+
+/**
+ * POST /auth/token
+ * - Authenticate user
+ * - Returns Supabase JWT (access_token)
+ * - Used by API Playground
+ */
+authRouter.post(
+  "/token",
+  authRateLimiter,
+  authController.token
 );
