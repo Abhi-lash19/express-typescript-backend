@@ -120,9 +120,8 @@
           <li><a href="/">Home</a></li>
           <li><a href="/admin/dashboard">Admin</a></li>
           <li><a href="/admin/playground">API Playground</a></li>
-          <li><a href="/admin/docs">Docs</a></li>
           <li>
-            <button onclick="toggleTheme()" title="Toggle theme">🌗</button>
+            <button onclick="toggleTheme()">🌗</button>
           </li>
           <li>
             <button onclick="openAuthModal()">Login / Get JWT</button>
@@ -135,39 +134,21 @@
       <%- body %>
     </main>
 
-    <footer class="app-footer">
-      <small class="muted">Express + TypeScript Backend Demo</small>
-    </footer>
-
-    <!-- =====================
-         Auth Modal
-         ===================== -->
+    <!-- AUTH MODAL -->
     <div class="modal-backdrop" id="auth-modal">
       <div class="modal">
         <h3>Create Account / Login</h3>
 
-        <p class="muted">
-          Demo authentication used to generate a user-scoped JWT for testing write APIs.
-        </p>
-
-        <ul class="muted">
-          <li>Email can be any valid-looking address</li>
-          <li>Password must be strong</li>
-          <li>Please remember credentials — used to generate JWTs</li>
-        </ul>
-
         <form id="auth-form">
-          <label>
-            Email
-            <input type="email" id="auth-email" class="compact-input" required />
+          <label>Email
+            <input id="auth-email" type="email" class="compact-input" required />
           </label>
 
-          <label>
-            Password
+          <label>Password
             <div class="password-wrapper">
               <input
-                type="password"
                 id="auth-password"
+                type="password"
                 class="compact-input"
                 required
               />
@@ -175,16 +156,15 @@
             </div>
           </label>
 
-          <ul class="password-hints" id="password-hints"></ul>
+          <ul id="password-hints"></ul>
 
           <button type="submit">Create Account</button>
 
-          <!-- FIXED CANCEL -->
           <button
             type="button"
             class="danger"
+            style="width:100%;margin-top:.75rem"
             onclick="closeAuthModal()"
-            style="margin-top:0.5rem"
           >
             Cancel
           </button>

@@ -21,7 +21,7 @@
   };
 
   /* -------------------------
-   * Restore Token (Persisted Auth)
+   * Restore Token
    * ------------------------- */
   const storedToken = localStorage.getItem("playground_token");
   if (storedToken) {
@@ -42,6 +42,36 @@
   let activeApi = null;
 
   /* -------------------------
+   * Helpers
+   * ------------------------- */
+
+  function syncEndpointFromParams() {
+    if (!activeApi) return;
+
+    let path = activeApi.path;
+
+    els.pathParams.querySelectorAll("input").forEach((i) => {
+      path = path.replace(`{${i.dataset.name}}`, i.value || "");
+    });
+
+    els.endpoint.value = path;
+  }
+
+  function syncPathParamsFromEndpoint() {
+    if (!activeApi) return;
+
+    const templateParts = activeApi.path.split("/");
+    const valueParts = els.endpoint.value.split("/");
+
+    els.pathParams.querySelectorAll("input").forEach((input) => {
+      const idx = templateParts.indexOf(`{${input.dataset.name}}`);
+      if (idx !== -1 && valueParts[idx]) {
+        input.value = valueParts[idx];
+      }
+    });
+  }
+
+  /* -------------------------
    * Render Params
    * ------------------------- */
   function renderParams(api) {
@@ -59,32 +89,15 @@
       input.placeholder = p.example ?? "";
       input.dataset.name = p.name;
 
-      row.append(label, input);
-
-      p.in === "path"
-        ? els.pathParams.appendChild(row)
-        : els.queryParams.appendChild(row);
-    });
-  }
-
-  /* -------------------------
-   * Build Endpoint
-   * ------------------------- */
-  function buildEndpoint() {
-    let path = els.endpoint.value || activeApi.path;
-
-    els.pathParams.querySelectorAll("input").forEach((i) => {
-      path = path.replace(`{${i.dataset.name}}`, i.value || "");
-    });
-
-    const query = [];
-    els.queryParams.querySelectorAll("input").forEach((i) => {
-      if (i.value) {
-        query.push(`${i.dataset.name}=${encodeURIComponent(i.value)}`);
+      if (p.in === "path") {
+        input.addEventListener("input", syncEndpointFromParams);
+        els.pathParams.appendChild(row);
+      } else {
+        els.queryParams.appendChild(row);
       }
-    });
 
-    return query.length ? `${path}?${query.join("&")}` : path;
+      row.append(label, input);
+    });
   }
 
   /* -------------------------
@@ -114,14 +127,9 @@
         ? JSON.stringify(api.requestBody.example, null, 2)
         : "";
 
+      // Schema is documentation only
       els.schema.textContent = JSON.stringify(
-        {
-          note:
-            api.method === "GET" && api.path === "/tasks"
-              ? "List endpoints return { data: { tasks: [] }, meta }"
-              : "Single-resource endpoints return { data: { task } }",
-          example: api.responseExample || {},
-        },
+        api.responseExample || {},
         null,
         2
       );
@@ -146,6 +154,11 @@
   });
 
   /* -------------------------
+   * Endpoint manual edit → sync params
+   * ------------------------- */
+  els.endpoint.addEventListener("input", syncPathParamsFromEndpoint);
+
+  /* -------------------------
    * Send Request
    * ------------------------- */
   document.getElementById("send").onclick = async () => {
@@ -154,9 +167,7 @@
       return;
     }
 
-    els.endpoint.value = buildEndpoint();
     const start = performance.now();
-
     const headers = {};
 
     if (els.authTypeSelect.value === "bearer" && els.token.value) {

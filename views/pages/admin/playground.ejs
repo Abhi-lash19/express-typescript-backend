@@ -8,51 +8,30 @@
   <p>Swagger-like API explorer for backend testing</p>
 </hgroup>
 
-<!-- =====================
-     Generate JWT
-     ===================== -->
-<article>
-  <h3>🔐 Generate JWT</h3>
+<!-- Generate JWT  Authorization -->
+<article class="side-by-side">
+  <div>
+    <h3>🔐 Generate JWT</h3>
+    <label>Email <input id="pg-email" class="compact-input" /></label>
+    <label>Password <input id="pg-password" type="password" class="compact-input" /></label>
+    <button id="generate-token">Generate Token</button>
+    <p id="pg-auth-message" class="muted"></p>
+  </div>
 
-  <label>Email
-    <input id="pg-email" class="compact-input" />
-  </label>
-
-  <label>Password
-    <input id="pg-password" type="password" class="compact-input" />
-  </label>
-
-  <button id="generate-token">Generate Token</button>
-  <p id="pg-auth-message" class="muted"></p>
-</article>
-
-<!-- Authorization -->
-<article>
-  <h3>Authorization</h3>
-
-  <label>
-    Auth Type
-    <select id="authType" class="compact-input">
-      <option value="none">No Auth</option>
-      <option value="bearer" selected>Bearer Token</option>
-    </select>
-  </label>
-
-  <div id="bearer-panel">
-    <label>
-      Bearer Token
-      <input
-        id="token"
-        class="compact-input"
-        placeholder="Paste Supabase JWT"
-        autocomplete="off"
-      />
+  <div>
+    <h3>Authorization</h3>
+    <label>Auth Type
+      <select id="authType" class="compact-input">
+        <option value="none">None</option>
+        <option value="bearer" selected>Bearer</option>
+      </select>
     </label>
 
-    <small class="muted">
-      GET may work without auth.
-      POST / PUT / DELETE require JWT.
-    </small>
+    <div id="bearer-panel">
+      <label>Bearer Token
+        <input id="token" class="compact-input" />
+      </label>
+    </div>
   </div>
 </article>
 
