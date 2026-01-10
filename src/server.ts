@@ -23,7 +23,7 @@ import { taskRouter } from "./routes/tasks";
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
 import { authRouter } from "./routes/auth";
-
+import { buildOpenApiSpec } from "./openapi";
 
 const app = express();
 /**
@@ -142,6 +142,15 @@ app.get("/health", (_req, res) => {
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   });
+});
+
+/**
+ * ------------------------
+ * OPENAPI
+ * ------------------------
+ */
+app.get("/openapi.json", (_req, res) => {
+  res.json(buildOpenApiSpec());
 });
 
 /**

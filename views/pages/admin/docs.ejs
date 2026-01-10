@@ -1,26 +1,47 @@
 <!--views/pages/admin/docs.ejs-->
 
-<%- include("../../layout/base", {
-  title: "API Documentation",
-  body: `
-    <hgroup>
-      <h1>API Documentation</h1>
-      <p>Authentication, RLS, endpoints, and error model</p>
-    </hgroup>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>API Documentation</title>
 
-    <article>
-      <p>
-        All API access requires authentication using Supabase-issued JWTs.
-        Any authenticated user may read tasks, but only task owners may
-        create, update, or delete them.
-      </p>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"
+    />
 
-      <p>
-        Ownership is enforced at multiple layers, including database-level
-        Row Level Security (RLS).
-      </p>
+    <style>
+      body {
+        margin: 0;
+        background: #0f172a;
+      }
 
-      <p><em>Phase 5 implementation</em></p>
-    </article>
-  `
-}) %>
+      .swagger-ui {
+        background: #0f172a;
+      }
+
+      .swagger-ui * {
+        color: #e5e7eb !important;
+      }
+
+      .topbar {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script>
+      SwaggerUIBundle({
+        url: "/openapi.json",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        persistAuthorization: true,
+      });
+    </script>
+  </body>
+</html>
