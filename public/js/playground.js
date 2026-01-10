@@ -20,6 +20,15 @@
     bearerPanel: document.getElementById("bearer-panel"),
   };
 
+  /* -------------------------
+   * Restore Token (Persisted Auth)
+   * ------------------------- */
+  const storedToken = localStorage.getItem("playground_token");
+  if (storedToken) {
+    els.token.value = storedToken;
+    els.authTypeSelect.value = "bearer";
+  }
+
   const METHOD_COLOR = {
     GET: "#4da3ff",
     POST: "#4caf50",
@@ -70,8 +79,9 @@
 
     const query = [];
     els.queryParams.querySelectorAll("input").forEach((i) => {
-      if (i.value)
+      if (i.value) {
         query.push(`${i.dataset.name}=${encodeURIComponent(i.value)}`);
+      }
     });
 
     return query.length ? `${path}?${query.join("&")}` : path;
@@ -114,26 +124,32 @@
    * Authorization UX
    * ------------------------- */
   function updateAuthUI() {
-    if (!els.authTypeSelect) return;
     els.bearerPanel.style.display =
       els.authTypeSelect.value === "bearer" ? "block" : "none";
   }
 
-  els.authTypeSelect?.addEventListener("change", updateAuthUI);
+  els.authTypeSelect.addEventListener("change", updateAuthUI);
   updateAuthUI();
+
+  els.token.addEventListener("input", () => {
+    localStorage.setItem("playground_token", els.token.value);
+  });
 
   /* -------------------------
    * Send Request
    * ------------------------- */
   document.getElementById("send").onclick = async () => {
+    if (!activeApi) {
+      alert("Please select an endpoint first.");
+      return;
+    }
+
     els.endpoint.value = buildEndpoint();
     const start = performance.now();
 
     const headers = {};
-    if (
-      els.authTypeSelect?.value === "bearer" &&
-      els.token.value
-    ) {
+
+    if (els.authTypeSelect.value === "bearer" && els.token.value) {
       headers.Authorization = `Bearer ${els.token.value}`;
     }
 
@@ -170,6 +186,43 @@
       alert("Invalid JSON");
     }
   };
+
+  /* -------------------------
+   * Generate Token (Auth → Playground)
+   * ------------------------- */
+  document
+    .getElementById("generate-token")
+    ?.addEventListener("click", async () => {
+      const email = document.getElementById("pg-email").value;
+      const password = document.getElementById("pg-password").value;
+      const msg = document.getElementById("pg-auth-message");
+
+      msg.textContent = "Generating token...";
+
+      try {
+        const res = await fetch("/auth/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          msg.textContent = data?.error?.message || "Invalid credentials";
+          return;
+        }
+
+        els.token.value = data.token;
+        localStorage.setItem("playground_token", data.token);
+        els.authTypeSelect.value = "bearer";
+        updateAuthUI();
+
+        msg.textContent = "Token generated and applied successfully.";
+      } catch {
+        msg.textContent = "Network error while generating token.";
+      }
+    });
 
   /* -------------------------
    * Tabs

@@ -8,6 +8,32 @@
   <p>Swagger-like API explorer for backend testing</p>
 </hgroup>
 
+<!-- =====================
+     Generate JWT
+     ===================== -->
+<article>
+  <h3>🔐 Generate JWT (Required for Write APIs)</h3>
+
+  <p class="muted">
+    Generate a user-scoped JWT using email & password.
+    This token will be automatically injected into requests.
+  </p>
+
+  <label>
+    Email
+    <input id="pg-email" type="email" placeholder="user@test.dev" />
+  </label>
+
+  <label>
+    Password
+    <input id="pg-password" type="password" placeholder="Strong password" />
+  </label>
+
+  <button id="generate-token">Generate Token</button>
+
+  <p id="pg-auth-message" class="muted"></p>
+</article>
+
 <!-- Authorization -->
 <article>
   <h3>Authorization</h3>
@@ -35,6 +61,18 @@
       POST / PUT / DELETE require a valid Supabase JWT.
     </small>
   </div>
+</article>
+
+<article>
+  <h3>📘 Data Ownership Rules</h3>
+
+  <ul class="muted">
+    <li>Anyone can <strong>read</strong> all tasks</li>
+    <li>Creating a task assigns ownership to your JWT</li>
+    <li>You can only <strong>update or delete</strong> tasks you created</li>
+    <li>Guessing another task ID will fail</li>
+    <li>Enforced at both API and database (RLS) level</li>
+  </ul>
 </article>
 
 <!-- Endpoints -->
