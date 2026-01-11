@@ -11,9 +11,6 @@
     localStorage.setItem("theme", next);
   };
 
-  // notify all listeners (dashboard, docs, etc.)
-  window.dispatchEvent(new Event("themechange"));
-
   /* -------------------------
    * Modal Controls
    * ------------------------- */
@@ -25,6 +22,10 @@
     document.getElementById("auth-modal").style.display = "none";
     document.getElementById("auth-message").textContent = "";
     document.getElementById("password-hints").innerHTML = "";
+
+    // reset fields (important UX)
+    document.getElementById("auth-email").value = "";
+    document.getElementById("auth-password").value = "";
   };
 
   window.togglePasswordVisibility = function () {
@@ -71,7 +72,7 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("auth-email").value;
+      const email = document.getElementById("auth-email").value.trim();
       const password = passwordInput.value;
 
       const errors = validatePassword(password);
@@ -99,15 +100,14 @@
           return;
         }
 
-        /* -------------------------
-         * AUTO LOGIN AFTER SIGNUP
-         * ------------------------- */
-        localStorage.setItem("auth_token", data.token);
-        window.dispatchEvent(new Event("storage"));
+        // auto-login
+        if (data.token) {
+          localStorage.setItem("auth_token", data.token);
+          window.dispatchEvent(new Event("storage"));
+        }
 
         msg.className = "success-text";
-        msg.textContent =
-          "Account created successfully. You can now use the API Playground.";
+        msg.textContent = "Account created successfully.";
 
         setTimeout(() => {
           closeAuthModal();

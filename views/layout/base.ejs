@@ -46,7 +46,7 @@
       .error-text {
         color: #c62828;
         font-size: 0.85rem;
-        margin-top: 0.25rem;
+        margin-top: 0.5rem;
       }
 
       .success-text {
@@ -55,30 +55,11 @@
         margin-top: 0.5rem;
       }
 
-      .password-hints li {
-        color: #c62828;
-        font-size: 0.8rem;
-      }
-
-      .password-wrapper {
-        position: relative;
-      }
-
-      .toggle-password {
-        position: absolute;
-        right: 0.75rem;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 0.9rem;
-        opacity: 0.6;
-      }
-
       /* ---------- Modal ---------- */
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.65);
         display: none;
         align-items: center;
         justify-content: center;
@@ -87,25 +68,51 @@
 
       .modal {
         background: var(--pico-background-color);
-        padding: 2rem;
-        border-radius: 12px;
-        max-width: 520px;
+        padding: 2.25rem;
+        border-radius: 14px;
+        max-width: 420px;
         width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
       }
 
-      .compact-input {
-        max-width: 360px;
+      .modal h3 {
+        margin-bottom: 1.5rem;
+      }
+
+      .auth-input {
+        width: 100%;
+        height: 44px;
+        padding: 0 0.9rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+      }
+
+      .auth-field {
+        margin-bottom: 1.1rem;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 0.9rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 0.9rem;
+        opacity: 0.6;
+        user-select: none;
+      }
+
+      .auth-actions {
+        margin-top: 1.25rem;
       }
 
       .danger {
         color: #c62828;
-        font-weight: bold;
-      }
-
-      .side-by-side {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
+        font-weight: 600;
       }
     </style>
   </head>
@@ -121,13 +128,11 @@
         <ul>
           <!-- Dashboard is now the HOME -->
           <li><a href="/admin/dashboard">Home</a></li>
-
           <li><a href="/admin/playground">API Playground</a></li>
-
           <li><a href="/admin/docs">Docs</a></li>
 
           <li>
-            <button onclick="toggleTheme()">🌗</button>
+            <button type="button" onclick="toggleTheme()">🌗</button>
           </li>
 
           <li>
@@ -148,47 +153,49 @@
       <div class="modal">
         <h3>Create Account / Login</h3>
 
-        <form id="auth-form">
-          <label>
-            Email
+        <form id="auth-form" autocomplete="off">
+          <div class="auth-field">
             <input
               id="auth-email"
               type="email"
-              class="compact-input"
+              class="auth-input"
+              placeholder="Email"
               required
             />
-          </label>
+          </div>
 
-          <label>
-            Password
-            <div class="password-wrapper">
-              <input
-                id="auth-password"
-                type="password"
-                class="compact-input"
-                required
-              />
-              <span
-                class="toggle-password"
-                onclick="togglePasswordVisibility()"
-                title="Show / Hide password"
-                >👁</span
-              >
-            </div>
-          </label>
+          <div class="auth-field password-wrapper">
+            <input
+              id="auth-password"
+              type="password"
+              class="auth-input"
+              placeholder="Password"
+              required
+            />
+            <span
+              class="toggle-password"
+              onclick="togglePasswordVisibility()"
+              title="Show / Hide password"
+              >👁</span
+            >
+          </div>
 
           <ul id="password-hints"></ul>
 
-          <button type="submit">Create Account</button>
+          <div class="auth-actions">
+            <button type="submit" style="width: 100%">
+              Create Account
+            </button>
 
-          <button
-            type="button"
-            class="danger"
-            style="width: 100%; margin-top: 0.75rem"
-            onclick="closeAuthModal()"
-          >
-            Cancel
-          </button>
+            <button
+              type="button"
+              class="danger"
+              style="width: 100%; margin-top: 0.75rem"
+              onclick="closeAuthModal()"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
 
         <p id="auth-message" class="muted"></p>
