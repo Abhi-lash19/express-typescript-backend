@@ -1,203 +1,201 @@
 <!-- views/pages/admin/home.ejs -->
-<%- include("../../layout/base", {
-  title,
-  body: `
-    <!-- HERO -->
-    <hgroup>
-      <h1>🚀 Backend Admin Console</h1>
-      <p class="muted">
-        Production-ready Express + TypeScript backend with JWT authentication,
-        ownership enforcement, rate-limiting, and OpenAPI documentation.
-      </p>
-    </hgroup>
+<%- include("../../layout/base", { title: title }) %>
 
-    <!-- PROJECT OVERVIEW -->
+<!-- HERO -->
+<hgroup>
+  <h1>🚀 Backend Admin Console</h1>
+  <p class="muted">
+    Production-ready Express + TypeScript backend with JWT authentication,
+    ownership enforcement, rate-limiting, and OpenAPI documentation.
+  </p>
+</hgroup>
+
+<!-- PROJECT OVERVIEW -->
+<article>
+  <h3>📦 Project Overview</h3>
+  <p>
+    This project is a <strong>secure, multi-user backend system</strong>
+    designed to demonstrate real-world backend architecture and
+    production-readiness patterns.
+  </p>
+
+  <ul>
+    <li>JWT-based authentication (signup + token issuance)</li>
+    <li>User-scoped data access with ownership rules</li>
+    <li>Rate limiting & security headers</li>
+    <li>Swagger-powered API documentation</li>
+    <li>Interactive API Playground for live testing</li>
+  </ul>
+</article>
+
+<!-- SYSTEM METRICS -->
+<section>
+  <h3>📊 Live System Metrics</h3>
+
+  <section class="grid">
     <article>
-      <h3>📦 Project Overview</h3>
-      <p>
-        This project is a <strong>secure, multi-user backend system</strong>
-        designed to demonstrate real-world backend architecture and
-        production-readiness patterns.
-      </p>
-
-      <ul>
-        <li>JWT-based authentication (signup + token issuance)</li>
-        <li>User-scoped data access with ownership rules</li>
-        <li>Rate limiting & security headers</li>
-        <li>Swagger-powered API documentation</li>
-        <li>Interactive API Playground for live testing</li>
-      </ul>
+      <h4>API Health</h4>
+      <p class="metric" id="api-status">—</p>
     </article>
 
-    <!-- SYSTEM METRICS -->
-    <section>
-      <h3>📊 Live System Metrics</h3>
+    <article>
+      <h4>Uptime</h4>
+      <p class="metric" id="api-uptime">—</p>
+    </article>
 
-      <section class="grid">
-        <article>
-          <h4>API Health</h4>
-          <p class="metric" id="api-status">—</p>
-        </article>
+    <article>
+      <h4>Environment</h4>
+      <p class="metric" id="api-env">—</p>
+    </article>
 
-        <article>
-          <h4>Uptime</h4>
-          <p class="metric" id="api-uptime">—</p>
-        </article>
-
-        <article>
-          <h4>Environment</h4>
-          <p class="metric" id="api-env">—</p>
-        </article>
-
-        <article>
-          <h4>Total APIs</h4>
-          <p class="metric" id="api-count">—</p>
-        </article>
-      </section>
-    </section>
+    <article>
+      <h4>Total APIs</h4>
+      <p class="metric" id="api-count">—</p>
+    </article>
+  </section>
+</section>
 
     <!-- HOW TO USE (COLLAPSIBLE) -->
-    <article>
-      <details>
-        <summary><strong>🧭 How to Use This System</strong></summary>
+<article>
+  <details>
+    <summary><strong>🧭 How to Use This System</strong></summary>
 
-        <ol style="margin-top: 1rem">
-          <li>
-            Click <strong>Login / Get JWT</strong> and create a user account
-          </li>
-          <li>
-            Navigate to <strong>API Playground</strong> to generate a JWT token
-          </li>
-          <li>
-            Select an API endpoint and send authenticated requests
-          </li>
-          <li>
-            Observe ownership enforcement — only creators can update or delete data
-          </li>
-        </ol>
-      </details>
-    </article>
+    <ol style="margin-top: 1rem">
+      <li>
+        Click <strong>Login / Get JWT</strong> and create a user account
+      </li>
+      <li>
+        Navigate to <strong>API Playground</strong> to generate a JWT token
+      </li>
+      <li>
+        Select an API endpoint and send authenticated requests
+      </li>
+      <li>
+        Observe ownership enforcement — only creators can update or delete data
+      </li>
+    </ol>
+  </details>
+</article>
 
     <!-- API PLAYGROUND GUIDE (COLLAPSIBLE) -->
+<article>
+  <details>
+    <summary><strong>🧪 API Playground – Step-by-Step Guide</strong></summary>
+
+    <ol style="margin-top: 1rem">
+      <li>
+        <strong>Generate JWT</strong><br />
+        Enter your email and password in the <em>Generate JWT</em> panel and click
+        <strong>Generate Token</strong>. The JWT is automatically applied.
+      </li>
+
+      <li>
+        <strong>Select an Endpoint</strong><br />
+        Click any endpoint from the <em>Endpoints</em> list. Method, path,
+        parameters, and schemas are preloaded.
+      </li>
+
+      <li>
+        <strong>Edit Path & Query Parameters</strong><br />
+        Replace <code>{id}</code> values and add query parameters if required.
+      </li>
+
+      <li>
+        <strong>Edit Request Body</strong><br />
+        For POST / PUT requests, open the <em>Body</em> tab and modify JSON.
+      </li>
+
+      <li>
+        <strong>Send Request</strong><br />
+        Click <strong>Send Request</strong> to inspect live responses,
+        status codes, and latency.
+      </li>
+
+      <li>
+        <strong>Ownership Rules</strong><br />
+        Only resources created with your JWT can be updated or deleted.
+        Unauthorized access returns <code>404</code> by design.
+      </li>
+    </ol>
+  </details>
+</article>
+
+<!-- PAGE GUIDE -->
+<article>
+  <h3>🗺️ Navigation Guide</h3>
+
+  <section class="grid">
     <article>
-      <details>
-        <summary><strong>🧪 API Playground – Step-by-Step Guide</strong></summary>
-
-        <ol style="margin-top: 1rem">
-          <li>
-            <strong>Generate JWT</strong><br />
-            Enter your email and password in the <em>Generate JWT</em> panel and click
-            <strong>Generate Token</strong>. The JWT is automatically applied.
-          </li>
-
-          <li>
-            <strong>Select an Endpoint</strong><br />
-            Click any endpoint from the <em>Endpoints</em> list. Method, path,
-            parameters, and schemas are preloaded.
-          </li>
-
-          <li>
-            <strong>Edit Path & Query Parameters</strong><br />
-            Replace <code>{id}</code> values and add query parameters if required.
-          </li>
-
-          <li>
-            <strong>Edit Request Body</strong><br />
-            For POST / PUT requests, open the <em>Body</em> tab and modify JSON.
-          </li>
-
-          <li>
-            <strong>Send Request</strong><br />
-            Click <strong>Send Request</strong> to inspect live responses,
-            status codes, and latency.
-          </li>
-
-          <li>
-            <strong>Ownership Rules</strong><br />
-            Only resources created with your JWT can be updated or deleted.
-            Unauthorized access returns <code>404</code> by design.
-          </li>
-        </ol>
-      </details>
-    </article>
-
-    <!-- PAGE GUIDE -->
-    <article>
-      <h3>🗺️ Navigation Guide</h3>
-
-      <section class="grid">
-        <article>
-          <h4>🏠 Home</h4>
-          <p class="muted">
-            System overview, metrics, architecture, and usage guidance.
-          </p>
-        </article>
-
-        <article>
-          <h4>🧪 API Playground</h4>
-          <p class="muted">
-            Interactive UI to generate JWTs and test APIs with real requests.
-          </p>
-        </article>
-
-        <article>
-          <h4>📘 Docs</h4>
-          <p class="muted">
-            OpenAPI-driven documentation with schemas, request/response examples,
-            and authorization details.
-          </p>
-        </article>
-      </section>
-    </article>
-
-    <!-- ARCHITECTURE DOCUMENTATION -->
-    <section class="docs-layout">
-      <aside class="docs-sidebar">
-        <strong>📘 Architecture</strong>
-        <nav>
-          <a href="#hld">HLD</a>
-          <a href="#lld">LLD</a>
-        </nav>
-      </aside>
-
-      <main class="docs-content">
-        <article id="hld">
-          <details open>
-            <summary>🏗️ High Level Design (HLD)</summary>
-            <div class="doc-body">
-              <%- hld %>
-            </div>
-          </details>
-        </article>
-
-        <article id="lld">
-          <details>
-            <summary>🧩 Low Level Design (LLD)</summary>
-            <div class="doc-body">
-              <%- lld %>
-            </div>
-          </details>
-        </article>
-      </main>
-    </section>
-
-    <!-- LEARNING -->
-    <article>
-      <h3>🧠 What I Built & Learned</h3>
-      <ul>
-        <li>Designing stateless JWT authentication flows</li>
-        <li>Implementing ownership-based access control</li>
-        <li>Layered Express middleware (auth, rate-limit, validation)</li>
-        <li>OpenAPI-first API design and documentation</li>
-        <li>Building internal tools to improve developer experience</li>
-      </ul>
-
+      <h4>🏠 Home</h4>
       <p class="muted">
-        This project emphasizes <strong>production readiness</strong>,
-        security, and maintainability over simple CRUD demos.
+        System overview, metrics, architecture, and usage guidance.
       </p>
     </article>
 
-    <script src="/js/home-metrics.js"></script>
-  `
-}) %>
+    <article>
+      <h4>🧪 API Playground</h4>
+      <p class="muted">
+        Interactive UI to generate JWTs and test APIs with real requests.
+      </p>
+    </article>
+
+    <article>
+      <h4>📘 Docs</h4>
+      <p class="muted">
+        OpenAPI-driven documentation with schemas, request/response examples,
+        and authorization details.
+      </p>
+    </article>
+  </section>
+</article>
+
+<!-- ARCHITECTURE DOCUMENTATION -->
+<section class="docs-layout">
+  <aside class="docs-sidebar">
+    <strong>📘 Architecture</strong>
+    <nav>
+      <a href="#hld">HLD</a>
+      <a href="#lld">LLD</a>
+    </nav>
+  </aside>
+
+  <main class="docs-content">
+    <article id="hld">
+      <details open>
+        <summary>🏗️ High Level Design (HLD)</summary>
+        <div class="doc-body">
+          <%- hld %>
+        </div>
+      </details>
+    </article>
+
+    <article id="lld">
+      <details>
+        <summary>🧩 Low Level Design (LLD)</summary>
+        <div class="doc-body">
+          <%- lld %>
+        </div>
+      </details>
+    </article>
+  </main>
+</section>
+
+<!-- LEARNING -->
+<article>
+  <h3>🧠 What I Built & Learned</h3>
+
+  <ul>
+    <li>Designing stateless JWT authentication flows</li>
+    <li>Implementing ownership-based access control</li>
+    <li>Layered Express middleware (auth, rate-limit, validation)</li>
+    <li>OpenAPI-first API design and documentation</li>
+    <li>Building internal tools to improve developer experience</li>
+  </ul>
+
+  <p class="muted">
+    This project emphasizes <strong>production readiness</strong>,
+    security, and maintainability over simple CRUD demos.
+  </p>
+</article>
+
+<script src="/js/home-metrics.js"></script>
