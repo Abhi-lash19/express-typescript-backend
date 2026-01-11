@@ -126,12 +126,16 @@ app.get("/health", (_req, res) => {
 });
 
 /**
- * HOME = ADMIN DASHBOARD
- * - No rate limiting (SSR page)
+ * HOME (Single Landing Page)
+ * - SSR page
+ * - No rate limiting
  */
 app.get("/", (_req, res) => {
-  res.redirect("/admin/dashboard");
+  res.render("pages/admin/home", {
+    title: "Home",
+  });
 });
+
 
 /**
  * Authentication Routes
