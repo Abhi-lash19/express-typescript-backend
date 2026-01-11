@@ -38,13 +38,19 @@
         font-weight: 500;
       }
 
+      /* ICON-ONLY THEME BUTTON */
       .topbar button {
         cursor: pointer;
         background: transparent;
         border: 1px solid #334155;
         color: inherit;
-        padding: 0.35rem 0.6rem;
         border-radius: 6px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       /* ---------- Theme Background ---------- */
@@ -106,7 +112,14 @@
         <a href="/admin/docs">Docs</a>
       </div>
 
-      <button onclick="toggleTheme()">🌗 Theme</button>
+      <!-- ICON ONLY -->
+      <button
+        onclick="toggleTheme()"
+        title="Toggle theme"
+        aria-label="Toggle theme"
+      >
+        🌗
+      </button>
     </div>
 
     <div id="swagger-ui"></div>
@@ -141,7 +154,6 @@
       }
 
       syncTheme();
-
       window.addEventListener("storage", syncTheme);
       window.addEventListener("themechange", syncTheme);
 
@@ -154,6 +166,30 @@
         deepLinking: true,
         persistAuthorization: true,
       });
+
+      /* -------------------------
+         Auto-select Production Server
+      ------------------------- */
+      function selectProductionServer() {
+        const interval = setInterval(() => {
+          const select = document.querySelector(
+            ".swagger-ui select[aria-label='Servers']"
+          );
+
+          if (!select) return;
+
+          for (const option of select.options) {
+            if (option.textContent.toLowerCase().includes("production")) {
+              select.value = option.value;
+              select.dispatchEvent(new Event("change"));
+              clearInterval(interval);
+              break;
+            }
+          }
+        }, 100);
+      }
+
+      selectProductionServer();
     </script>
   </body>
 </html>
