@@ -55,6 +55,20 @@
         margin-top: 0.5rem;
       }
 
+      /* ---------- Side-by-side layouts ---------- */
+      .side-by-side {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
+        align-items: start;
+      }
+
+      @media (max-width: 900px) {
+        .side-by-side {
+          grid-template-columns: 1fr;
+        }
+      }
+
       /* ---------- Modal ---------- */
       .modal-backdrop {
         position: fixed;
