@@ -1,10 +1,5 @@
 // src/server.ts
 
-if (process.env.NODE_ENV !== "production") {
-  // Improves stack traces in dev only
-  require("source-map-support/register");
-}
-
 import 'dotenv/config';
 
 if (process.env.NODE_ENV !== "production") {
@@ -15,17 +10,32 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import helmet from "helmet";
+
 import { requestLogger } from "./middleware/requestLogger";
-import { globalRateLimiter } from "./middleware/rateLimiter";
+import {
+  globalRateLimiter,
+  authRateLimiter,
+} from "./middleware/rateLimiter";
+
 import { internalRouter } from "./routes/internal";
 import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
+import { authRouter } from "./routes/auth";
+
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
-import { authRouter } from "./routes/auth";
 import { buildOpenApiSpec } from "./openapi";
 
 const app = express();
+
+/**
+ * ------------------------
+ * Render / Proxy Settings
+ * ------------------------
+ * REQUIRED for correct IP detection behind Render proxy
+ */
+app.set("trust proxy", 1);
+
 /**
  * ------------------------
  * GLOBAL CONTRACT NOTES
@@ -37,10 +47,9 @@ const app = express();
  * - OpenAPI will later reflect these guarantees
  */
 
-
 /**
  * ------------------------
- * Global Middleware
+ * Core Middleware
  * ------------------------
  */
 
@@ -76,19 +85,18 @@ app.use(
   })
 );
 
-// Global rate limiting
-app.use(globalRateLimiter);
-
-// Structured request logging
-app.use(requestLogger);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* ------------------------
- * Views & Static
- * ------------------------ */
+// Structured request logging (safe after proxy trust)
+app.use(requestLogger);
 
+/**
+ * ------------------------
+ * Views & Static Assets
+ * ------------------------
+ * NEVER rate-limited
+ */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
 app.use(express.static(path.join(__dirname, "..", "public")));
@@ -98,38 +106,16 @@ app.use((req, res, next) => {
   next();
 });
 
-/* ------------------------
+/**
+ * ------------------------
  * ROUTES
- * ------------------------ */
-
-/**
- * HOME = ADMIN DASHBOARD
- */
-app.get("/", (_req, res) => {
-  res.redirect("/admin/dashboard");
-});
-
-/**
- * Authentication Routes
- */
-app.use("/auth", authRouter);
-
-/**
- * APIs
- */
-app.use("/api/v1/tasks", taskRouter);
-app.use("/tasks", taskRouter);
-
-/**
- * Admin + Internal
- */
-app.use("/internal", internalRouter);
-app.use("/admin", adminRouter);
-
-/**
  * ------------------------
- * HEALTH CHECK
- * ------------------------
+ */
+
+/**
+ * Health Check
+ * - Used by Render
+ * - MUST NOT be rate-limited
  */
 app.get("/health", (_req, res) => {
   res.status(200).json({
@@ -140,6 +126,34 @@ app.get("/health", (_req, res) => {
 });
 
 /**
+ * HOME = ADMIN DASHBOARD
+ * - No rate limiting (SSR page)
+ */
+app.get("/", (_req, res) => {
+  res.redirect("/admin/dashboard");
+});
+
+/**
+ * Authentication Routes
+ * - STRICT rate limiting
+ */
+app.use("/auth", authRateLimiter, authRouter);
+
+/**
+ * APIs
+ * - MODERATE rate limiting
+ */
+app.use("/api/v1/tasks", globalRateLimiter, taskRouter);
+app.use("/tasks", globalRateLimiter, taskRouter);
+
+/**
+ * Admin & Internal
+ * - NO rate limiting
+ */
+app.use("/admin", adminRouter);
+app.use("/internal", internalRouter);
+
+/**
  * OpenAPI
  */
 app.get("/openapi.json", (_req, res) => {
@@ -147,7 +161,9 @@ app.get("/openapi.json", (_req, res) => {
 });
 
 /**
+ * ------------------------
  * Error Handling
+ * ------------------------
  */
 app.use((req, _res, next) => {
   next(new AppError(`Route ${req.originalUrl} not found`, 404));

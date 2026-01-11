@@ -3,12 +3,12 @@
 import rateLimit from "express-rate-limit";
 
 /**
- * Global rate limiter
- * Protects against abuse & accidental flooding
+ * General API rate limiter
+ * Safe for Render free tier
  */
 export const globalRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per IP per window
+  max: 500, // per IP
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -17,25 +17,12 @@ export const globalRateLimiter = rateLimit({
 });
 
 /**
- * Stricter limiter for write operations
- */
-export const writeRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 30,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    error: "Too many write requests, slow down.",
-  },
-});
-
-/**
- * Strict limiter for authentication endpoints
- * Prevents signup abuse on free tier
+ * Authentication rate limiter
+ * Prevents brute-force & abuse
  */
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
