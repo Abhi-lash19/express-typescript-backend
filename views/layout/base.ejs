@@ -111,20 +111,29 @@
   </head>
 
   <body>
+    <!-- GLOBAL NAVIGATION -->
     <header class="container">
       <nav>
         <ul>
           <li><strong>Backend Admin</strong></li>
         </ul>
+
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/admin/dashboard">Admin</a></li>
+          <!-- Dashboard is now the HOME -->
+          <li><a href="/admin/dashboard">Dashboard</a></li>
+
           <li><a href="/admin/playground">API Playground</a></li>
+
+          <li><a href="/admin/docs">Docs</a></li>
+
           <li>
             <button onclick="toggleTheme()">🌗</button>
           </li>
+
           <li>
-            <button onclick="openAuthModal()">Login / Get JWT</button>
+            <button type="button" onclick="openAuthModal()">
+              Login / Get JWT
+            </button>
           </li>
         </ul>
       </nav>
@@ -140,11 +149,18 @@
         <h3>Create Account / Login</h3>
 
         <form id="auth-form">
-          <label>Email
-            <input id="auth-email" type="email" class="compact-input" required />
+          <label>
+            Email
+            <input
+              id="auth-email"
+              type="email"
+              class="compact-input"
+              required
+            />
           </label>
 
-          <label>Password
+          <label>
+            Password
             <div class="password-wrapper">
               <input
                 id="auth-password"
@@ -152,7 +168,12 @@
                 class="compact-input"
                 required
               />
-              <span class="toggle-password" onclick="togglePasswordVisibility()">👁</span>
+              <span
+                class="toggle-password"
+                onclick="togglePasswordVisibility()"
+                title="Show / Hide password"
+                >👁</span
+              >
             </div>
           </label>
 
@@ -163,7 +184,7 @@
           <button
             type="button"
             class="danger"
-            style="width:100%;margin-top:.75rem"
+            style="width: 100%; margin-top: 0.75rem"
             onclick="closeAuthModal()"
           >
             Cancel

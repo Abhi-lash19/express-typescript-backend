@@ -85,11 +85,10 @@ app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/**
- * ------------------------
- * View Engine & Static Files
- * ------------------------
- */
+/* ------------------------
+ * Views & Static
+ * ------------------------ */
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
 app.use(express.static(path.join(__dirname, "..", "public")));
@@ -99,17 +98,15 @@ app.use((req, res, next) => {
   next();
 });
 
+/* ------------------------
+ * ROUTES
+ * ------------------------ */
 
 /**
- * ------------------------
- * Routes
- * ------------------------
+ * HOME = ADMIN DASHBOARD
  */
-app.get("/", (req, res) => {
-  res.render("pages/index", {
-    title: "Backend Admin",
-    text1: "Production-ready Express + TypeScript backend",
-  });
+app.get("/", (_req, res) => {
+  res.redirect("/admin/dashboard");
 });
 
 /**
@@ -118,16 +115,14 @@ app.get("/", (req, res) => {
 app.use("/auth", authRouter);
 
 /**
- * Public API (Versioned)
+ * APIs
  */
 app.use("/api/v1/tasks", taskRouter);
-
-/**
- * Legacy API (Backward compatibility)
- * NOTE: Can be deprecated later
- */
 app.use("/tasks", taskRouter);
 
+/**
+ * Admin + Internal
+ */
 app.use("/internal", internalRouter);
 app.use("/admin", adminRouter);
 
@@ -145,20 +140,16 @@ app.get("/health", (_req, res) => {
 });
 
 /**
- * ------------------------
- * OPENAPI
- * ------------------------
+ * OpenAPI
  */
 app.get("/openapi.json", (_req, res) => {
   res.json(buildOpenApiSpec());
 });
 
 /**
- * ------------------------
- * Error Handling (LAST)
- * ------------------------
+ * Error Handling
  */
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   next(new AppError(`Route ${req.originalUrl} not found`, 404));
 });
 

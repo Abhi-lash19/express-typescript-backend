@@ -5,12 +5,11 @@ import { Router } from "express";
 export const adminRouter = Router();
 
 /**
- * ------------------------
- * Admin UI Pages (Read-only)
- * ------------------------
- * These routes only render EJS views.
- * No business logic should live here.
+ * Admin root → Dashboard
  */
+adminRouter.get("/", (_req, res) => {
+  res.redirect("/admin/dashboard");
+});
 
 adminRouter.get("/dashboard", (_req, res) => {
   res.render("pages/admin/dashboard", {
