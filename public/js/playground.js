@@ -1,5 +1,12 @@
 // public/js/playground.js
 
+// Reuses same UX as login modal
+window.togglePlaygroundPassword = function () {
+  const input = document.getElementById("pg-password");
+  if (!input) return;
+  input.type = input.type === "password" ? "text" : "password";
+};
+
 (async function () {
   const els = {
     list: document.getElementById("endpoint-list"),
@@ -209,36 +216,36 @@
    * Generate Token (Auth → Playground)
    * ------------------------- */
   document.getElementById("generate-token")?.addEventListener("click", async () => {
-    const email = document.getElementById("pg-email").value;
-    const password = document.getElementById("pg-password").value;
-    const msg = document.getElementById("pg-auth-message");
+      const email = document.getElementById("pg-email").value;
+      const password = document.getElementById("pg-password").value;
+      const msg = document.getElementById("pg-auth-message");
 
-    msg.textContent = "Generating token...";
+      msg.textContent = "Generating token...";
 
-    try {
-      const res = await fetch("/auth/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      try {
+        const res = await fetch("/auth/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (!res.ok) {
-        msg.textContent = data?.error?.message || "Invalid credentials";
-        return;
+        if (!res.ok) {
+          msg.textContent = data?.error?.message || "Invalid credentials";
+          return;
+        }
+
+        els.token.value = data.token;
+        localStorage.setItem("playground_token", data.token);
+        els.authTypeSelect.value = "bearer";
+        updateAuthUI();
+
+        msg.textContent = "Token generated and applied successfully.";
+      } catch {
+        msg.textContent = "Network error while generating token.";
       }
-
-      els.token.value = data.token;
-      localStorage.setItem("playground_token", data.token);
-      els.authTypeSelect.value = "bearer";
-      updateAuthUI();
-
-      msg.textContent = "Token generated and applied successfully.";
-    } catch {
-      msg.textContent = "Network error while generating token.";
-    }
-  });
+    });
 
   /* -------------------------
    * Tabs

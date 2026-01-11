@@ -1,5 +1,4 @@
 <!--views/pages/admin/playground.ejs-->
-
 <%- include("../../layout/base", {
   title: "API Playground",
   body: `
@@ -8,34 +7,57 @@
   <p>Swagger-like API explorer for backend testing</p>
 </hgroup>
 
-<!-- Generate JWT  Authorization -->
+<!-- AUTH SECTION -->
 <article class="side-by-side">
+  <!-- Generate JWT -->
   <div>
     <h3>🔐 Generate JWT</h3>
-    <label>Email <input id="pg-email" class="compact-input" /></label>
-    <label>Password <input id="pg-password" type="password" class="compact-input" /></label>
+
+    <input
+      id="pg-email"
+      class="compact-input"
+      type="email"
+      placeholder="Email"
+    />
+
+    <div class="password-wrapper">
+      <input
+        id="pg-password"
+        type="password"
+        class="compact-input"
+        placeholder="Password"
+      />
+      <span
+        class="toggle-password"
+        onclick="togglePlaygroundPassword()"
+        title="Show / Hide password"
+      >👁</span>
+    </div>
+
     <button id="generate-token">Generate Token</button>
     <p id="pg-auth-message" class="muted"></p>
   </div>
 
+  <!-- Authorization -->
   <div>
     <h3>Authorization</h3>
-    <label>Auth Type
-      <select id="authType" class="compact-input">
-        <option value="none">None</option>
-        <option value="bearer" selected>Bearer</option>
-      </select>
-    </label>
+
+    <select id="authType" class="compact-input">
+      <option value="none">No Auth</option>
+      <option value="bearer" selected>Bearer</option>
+    </select>
 
     <div id="bearer-panel">
-      <label>Bearer Token
-        <input id="token" class="compact-input" />
-      </label>
+      <input
+        id="token"
+        class="compact-input"
+        placeholder="Bearer Token"
+      />
     </div>
   </div>
 </article>
 
-<!-- SIDE BY SIDE -->
+<!-- INFO SECTION -->
 <article class="side-by-side">
   <div>
     <h3>📘 Data Ownership Rules</h3>
@@ -53,18 +75,13 @@
   </div>
 </article>
 
+<!-- REQUEST / RESPONSE -->
 <section class="grid">
   <article>
     <h3>Request</h3>
 
-    <label>Method
-      <input id="method" readonly />
-    </label>
-
-    <label>Endpoint
-      <!-- FIXED: editable -->
-      <input id="endpoint" />
-    </label>
+    <input id="method" readonly placeholder="HTTP Method" />
+    <input id="endpoint" placeholder="Endpoint URL" />
 
     <!-- Tabs -->
     <nav>
@@ -92,17 +109,12 @@
 
     <!-- Body -->
     <section data-panel="body" hidden>
-      <label>Body Type
-        <select id="bodyType">
-          <option value="none">None</option>
-          <option value="json">JSON</option>
-        </select>
-      </label>
+      <select id="bodyType">
+        <option value="none">No Body</option>
+        <option value="json">JSON</option>
+      </select>
 
-      <label>Request Body
-        <textarea id="body" rows="8"></textarea>
-      </label>
-
+      <textarea id="body" rows="8" placeholder="Request JSON body"></textarea>
       <button id="beautify">Beautify JSON</button>
     </section>
 
