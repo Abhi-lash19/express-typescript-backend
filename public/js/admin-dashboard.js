@@ -1,27 +1,16 @@
 // public/js/admin-dashboard.js
-
 (function () {
   /* -------------------------
-   * Helpers
-   * ------------------------- */
-  function decodeJwt(token) {
-    try {
-      const payload = token.split(".")[1];
-      return JSON.parse(atob(payload));
-    } catch {
-      return null;
-    }
-  }
-
-  /* -------------------------
-   * API Health
+   * Load Health
    * ------------------------- */
   async function loadHealth() {
     try {
       const res = await fetch("/health");
       const data = await res.json();
+
       document.getElementById("api-status").textContent =
         data.status === "ok" ? "🟢 Healthy" : "🔴 Unhealthy";
+
       document.getElementById("api-uptime").textContent =
         Math.floor(data.uptime) + " sec";
     } catch {
@@ -36,27 +25,26 @@
     try {
       const res = await fetch("/internal/meta/system");
       const data = await res.json();
-      document.getElementById("api-env").textContent = data.environment;
+
+      document.getElementById("api-env").textContent =
+        data.environment || "—";
     } catch {
       document.getElementById("api-env").textContent = "—";
     }
   }
 
   /* -------------------------
-   * Auth Context
+   * API Count
    * ------------------------- */
-  function loadAuthContext() {
-    const token = localStorage.getItem("auth_token");
-    if (!token) return;
-
-    const payload = decodeJwt(token);
-    if (!payload) return;
-
-    document.getElementById("user-email").textContent =
-      payload.email || "—";
-
-    document.getElementById("auth-provider").textContent =
-      payload.app_metadata?.provider || "supabase";
+  async function loadApiCount() {
+    try {
+      const res = await fetch("/internal/meta/apis");
+      const data = await res.json();
+      document.getElementById("api-count").textContent =
+        data.apis?.length || "—";
+    } catch {
+      document.getElementById("api-count").textContent = "—";
+    }
   }
 
   /* -------------------------
@@ -64,8 +52,5 @@
    * ------------------------- */
   loadHealth();
   loadSystem();
-  loadAuthContext();
-
-  window.addEventListener("storage", loadAuthContext);
-  window.addEventListener("themechange", loadAuthContext);
+  loadApiCount();
 })();

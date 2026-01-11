@@ -1,62 +1,125 @@
 <!--views/pages/admin/dashboard.ejs-->
-
 <%- include("../../layout/base", {
   title: "Home",
   body: `
+    <!-- HERO -->
     <hgroup>
-      <h1>🏠 Home</h1>
-      <p>Backend system overview & security context</p>
+      <h1>🚀 Backend Admin Console</h1>
+      <p class="muted">
+        Production-ready Express + TypeScript backend with JWT authentication,
+        ownership enforcement, rate-limiting, and OpenAPI documentation.
+      </p>
     </hgroup>
 
+    <!-- PROJECT OVERVIEW -->
     <article>
-      <h3>🔐 Authentication for Full Access</h3>
-      <p class="muted">
-        You can explore system health, documentation, and read-only APIs without authentication.
-        To fully test write APIs (POST / PUT / DELETE) and generate a user-scoped JWT,
-        click <strong>Login / Get JWT</strong> in the top-right corner.
+      <h3>📦 Project Overview</h3>
+      <p>
+        This project is a <strong>secure, multi-user backend system</strong>
+        designed to demonstrate real-world backend architecture patterns.
       </p>
+
+      <ul>
+        <li>JWT-based authentication (signup + token issuance)</li>
+        <li>User-scoped data access with ownership rules</li>
+        <li>Rate limiting & security headers</li>
+        <li>Swagger-powered API documentation</li>
+        <li>Interactive API Playground for live testing</li>
+      </ul>
     </article>
 
+    <!-- SYSTEM METRICS -->
     <section>
-      <h3>System Health</h3>
+      <h3>📊 Live System Metrics</h3>
+
       <section class="grid">
         <article>
-          <h4>API Status</h4>
+          <h4>API Health</h4>
           <p class="metric" id="api-status">—</p>
         </article>
+
         <article>
           <h4>Uptime</h4>
           <p class="metric" id="api-uptime">—</p>
         </article>
+
         <article>
           <h4>Environment</h4>
           <p class="metric" id="api-env">—</p>
         </article>
+
+        <article>
+          <h4>Total APIs</h4>
+          <p class="metric" id="api-count">—</p>
+        </article>
       </section>
     </section>
 
-    <section>
-      <h3>Authenticated Context</h3>
-      <article>
-        <p class="muted">
-          Derived from the JWT currently stored in the browser.
-        </p>
-        <ul>
-          <li>
-            <strong>User Email:</strong>
-            <span id="user-email">—</span>
-          </li>
-          <li>
-            <strong>Auth Provider:</strong>
-            <span id="auth-provider">—</span>
-          </li>
-          <li>
-            <strong>Token Scope:</strong>
-            User-level (no admin override)
-          </li>
-        </ul>
-      </article>
-    </section>
+    <!-- HOW TO USE -->
+    <article>
+      <h3>🧭 How to Use This System</h3>
+
+      <ol>
+        <li>
+          Go to <strong>Login / Get JWT</strong> and create an account
+        </li>
+        <li>
+          Use the <strong>API Playground</strong> to generate a JWT token
+        </li>
+        <li>
+          Select an endpoint and send authenticated requests
+        </li>
+        <li>
+          Observe ownership enforcement (only owners can update/delete)
+        </li>
+      </ol>
+    </article>
+
+    <!-- PAGE GUIDE -->
+    <article>
+      <h3>🗺️ Navigation Guide</h3>
+
+      <section class="grid">
+        <article>
+          <h4>🏠 Home</h4>
+          <p class="muted">
+            High-level overview of the system, architecture, and usage.
+          </p>
+        </article>
+
+        <article>
+          <h4>🧪 API Playground</h4>
+          <p class="muted">
+            Swagger-like UI to generate JWTs and test APIs interactively.
+          </p>
+        </article>
+
+        <article>
+          <h4>📘 Docs</h4>
+          <p class="muted">
+            OpenAPI-driven documentation with schemas and request examples.
+          </p>
+        </article>
+      </section>
+    </article>
+
+    <!-- LEARNING & ENGINEERING -->
+    <article>
+      <h3>🧠 What I Built & Learned</h3>
+
+      <ul>
+        <li>Designing stateless JWT authentication flows</li>
+        <li>Implementing ownership-based access control</li>
+        <li>Express middleware layering (auth, rate-limit, validation)</li>
+        <li>OpenAPI-first API documentation</li>
+        <li>Building internal tools for developer experience</li>
+      </ul>
+
+      <p class="muted">
+        This project focuses on <strong>production readiness</strong>,
+        not just CRUD functionality.
+      </p>
+    </article>
 
     <script src="/js/admin-dashboard.js"></script>
   `
