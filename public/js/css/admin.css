@@ -1,0 +1,51 @@
+.docs-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.docs-sidebar {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1rem;
+  border-right: 1px solid #e5e7eb;
+}
+
+.docs-sidebar nav {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.docs-sidebar a {
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.docs-sidebar a:hover {
+  color: #111827;
+}
+
+.docs-content {
+  max-width: 900px;
+}
+
+.doc-body {
+  margin-top: 1rem;
+}
+
+.doc-body h2 {
+  margin-top: 1.5rem;
+}
+
+.doc-body h3 {
+  margin-top: 1rem;
+}
+
+details summary {
+  cursor: pointer;
+  font-size: 1.1rem;
+}

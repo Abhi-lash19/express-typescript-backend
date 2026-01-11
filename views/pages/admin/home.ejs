@@ -1,6 +1,6 @@
-<!--views/pages/admin/home.ejs-->
+<!-- views/pages/admin/home.ejs -->
 <%- include("../../layout/base", {
-  title: "Home",
+  title,
   body: `
     <!-- HERO -->
     <hgroup>
@@ -150,49 +150,40 @@
       </section>
     </article>
 
-    <!-- ARCHITECTURE DOCS -->
-    <article>
-      <h3>🏗️ Architecture & Design Documentation</h3>
+    <!-- ARCHITECTURE DOCUMENTATION -->
+    <section class="docs-layout">
+      <aside class="docs-sidebar">
+        <strong>📘 Architecture</strong>
+        <nav>
+          <a href="#hld">HLD</a>
+          <a href="#lld">LLD</a>
+        </nav>
+      </aside>
 
-      <p>
-        The internal architecture and design decisions for this system are documented
-        separately for clarity and maintainability.
-      </p>
+      <main class="docs-content">
+        <article id="hld">
+          <details open>
+            <summary>🏗️ High Level Design (HLD)</summary>
+            <div class="doc-body">
+              <%- hld %>
+            </div>
+          </details>
+        </article>
 
-      <ul>
-        <li>
-          <strong>High-Level Design (HLD):</strong>
-          <a
-            href="https://www.notion.so/HLD-Express-Supabase-Backend-System-2df0e402cf69801d8624c9b8f2c6dcc6"
-            target="_blank"
-            rel="noopener"
-          >
-            View HLD on Notion
-          </a>
-        </li>
+        <article id="lld">
+          <details>
+            <summary>🧩 Low Level Design (LLD)</summary>
+            <div class="doc-body">
+              <%- lld %>
+            </div>
+          </details>
+        </article>
+      </main>
+    </section>
 
-        <li>
-          <strong>Low-Level Design (LLD):</strong>
-          <a
-            href="https://www.notion.so/LLD-Express-Supabase-Backend-System-2df0e402cf6980d084dac70112edc6a8"
-            target="_blank"
-            rel="noopener"
-          >
-            View LLD on Notion
-          </a>
-        </li>
-      </ul>
-
-      <p class="muted">
-        These documents cover architecture, data flow, middleware layering,
-        security decisions, and API lifecycle design.
-      </p>
-    </article>
-
-    <!-- LEARNING & ENGINEERING -->
+    <!-- LEARNING -->
     <article>
       <h3>🧠 What I Built & Learned</h3>
-
       <ul>
         <li>Designing stateless JWT authentication flows</li>
         <li>Implementing ownership-based access control</li>
@@ -206,7 +197,7 @@
         security, and maintainability over simple CRUD demos.
       </p>
     </article>
-  <script src="/js/home-metrics.js"></script>
 
+    <script src="/js/home-metrics.js"></script>
   `
 }) %>
