@@ -21,7 +21,7 @@ import { internalRouter } from "./routes/internal";
 import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
 import { authRouter } from "./routes/auth";
-
+import { renderMarkdown } from "./utils";
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
 import { buildOpenApiSpec } from "./openapi";
@@ -131,8 +131,13 @@ app.get("/health", (_req, res) => {
  * - No rate limiting
  */
 app.get("/", (_req, res) => {
+  const hld = renderMarkdown("docs/hld.md");
+  const lld = renderMarkdown("docs/lld.md");
+
   res.render("pages/admin/home", {
     title: "Home",
+    hld,
+    lld,
   });
 });
 
