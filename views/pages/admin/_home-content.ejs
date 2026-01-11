@@ -1,0 +1,59 @@
+<!--views/pages/admin/_home-content.ejs-->
+<!-- HERO -->
+<hgroup>
+  <h1>🚀 Backend Admin Console</h1>
+  <p class="muted">
+    Production-ready Express + TypeScript backend with JWT authentication,
+    ownership enforcement, rate-limiting, and OpenAPI documentation.
+  </p>
+</hgroup>
+
+<!-- PROJECT OVERVIEW -->
+<article>
+  <h3>📦 Project Overview</h3>
+  <p>
+    This project is a <strong>secure, multi-user backend system</strong>
+    designed to demonstrate real-world backend architecture and
+    production-readiness patterns.
+  </p>
+</article>
+
+<!-- SYSTEM METRICS -->
+<section>
+  <h3>📊 Live System Metrics</h3>
+  <section class="grid">
+    <article><h4>API Health</h4><p id="api-status">—</p></article>
+    <article><h4>Uptime</h4><p id="api-uptime">—</p></article>
+    <article><h4>Environment</h4><p id="api-env">—</p></article>
+    <article><h4>Total APIs</h4><p id="api-count">—</p></article>
+  </section>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="docs-layout">
+  <aside class="docs-sidebar">
+    <strong>📘 Architecture</strong>
+    <nav>
+      <a href="#hld">HLD</a>
+      <a href="#lld">LLD</a>
+    </nav>
+  </aside>
+
+  <main class="docs-content">
+    <article id="hld">
+      <details open>
+        <summary>🏗️ High Level Design (HLD)</summary>
+        <div class="doc-body"><%- hld %></div>
+      </details>
+    </article>
+
+    <article id="lld">
+      <details>
+        <summary>🧩 Low Level Design (LLD)</summary>
+        <div class="doc-body"><%- lld %></div>
+      </details>
+    </article>
+  </main>
+</section>
+
+<script src="/js/home-metrics.js"></script>
