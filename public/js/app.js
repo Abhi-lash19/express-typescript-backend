@@ -38,8 +38,7 @@
     if (password.length < 10) errors.push("At least 10 characters");
     if (!/[A-Z]/.test(password)) errors.push("One uppercase letter required");
     if (!/[0-9]/.test(password)) errors.push("One number required");
-    if (!/[!@#$%^&*]/.test(password))
-      errors.push("One symbol required");
+    if (!/[!@#$%^&*]/.test(password)) errors.push("One symbol required");
     if (/\s/.test(password)) errors.push("No spaces allowed");
 
     return errors;
@@ -96,6 +95,12 @@
           msg.textContent = data?.error?.message || "Signup failed";
           return;
         }
+
+        /* -------------------------
+         * AUTO LOGIN AFTER SIGNUP
+         * ------------------------- */
+        localStorage.setItem("auth_token", data.token);
+        window.dispatchEvent(new Event("storage"));
 
         msg.className = "success-text";
         msg.textContent =

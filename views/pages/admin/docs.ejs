@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>API Documentation</title>
+    <title>API Docs</title>
 
     <link
       rel="stylesheet"
@@ -12,30 +12,106 @@
     />
 
     <style>
+      :root {
+        --bg-dark: #0f172a;
+        --bg-light: #ffffff;
+      }
+
       body {
         margin: 0;
-        background: #0f172a;
+        font-family: system-ui, sans-serif;
       }
 
-      .swagger-ui {
-        background: #0f172a;
+      /* ---------- Top Bar ---------- */
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1.25rem;
+        background: var(--bg-dark);
+        color: #e5e7eb;
       }
 
-      .swagger-ui * {
+      .topbar a {
+        color: #60a5fa;
+        text-decoration: none;
+        margin-right: 1rem;
+        font-weight: 500;
+      }
+
+      .topbar button {
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid #334155;
+        color: inherit;
+        padding: 0.35rem 0.6rem;
+        border-radius: 6px;
+      }
+
+      /* ---------- Swagger Theme ---------- */
+      body[data-theme="dark"] {
+        background: var(--bg-dark);
+      }
+
+      body[data-theme="light"] {
+        background: var(--bg-light);
+      }
+
+      body[data-theme="dark"] .swagger-ui {
+        background: var(--bg-dark);
+      }
+
+      body[data-theme="dark"] .swagger-ui * {
         color: #e5e7eb !important;
       }
 
-      .topbar {
+      body[data-theme="light"] .swagger-ui * {
+        color: #0f172a !important;
+      }
+
+      .swagger-ui .topbar {
         display: none;
       }
     </style>
   </head>
 
   <body>
+    <!-- MINI ADMIN BAR -->
+    <div class="topbar">
+      <div>
+        <strong>Backend Admin</strong>
+        <a href="/admin/dashboard">🏠 Home</a>
+        <a href="/admin/playground">API Playground</a>
+        <a href="/admin/docs">Docs</a>
+      </div>
+
+      <button onclick="toggleTheme()">🌗 Theme</button>
+    </div>
+
     <div id="swagger-ui"></div>
 
     <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+
     <script>
+      function applyTheme() {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        document.body.setAttribute("data-theme", theme);
+      }
+
+      function toggleTheme() {
+        const current = document.body.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        localStorage.setItem("theme", next);
+        document.body.setAttribute("data-theme", next);
+      }
+
+      applyTheme();
+
       SwaggerUIBundle({
         url: "/openapi.json",
         dom_id: "#swagger-ui",

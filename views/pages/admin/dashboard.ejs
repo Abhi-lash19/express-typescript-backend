@@ -1,11 +1,11 @@
 <!--views/pages/admin/dashboard.ejs-->
 
 <%- include("../../layout/base", {
-  title: "Admin Dashboard",
+  title: "Home",
   body: `
     <hgroup>
-      <h1>Admin Dashboard</h1>
-      <p>Read-only backend system & security overview</p>
+      <h1>🏠 Home</h1>
+      <p>Backend system overview & security context</p>
     </hgroup>
 
     <article>
@@ -39,7 +39,7 @@
       <h3>Authenticated Context</h3>
       <article>
         <p class="muted">
-          This information is derived from the JWT used to call backend APIs.
+          Derived from the JWT currently stored in the browser.
         </p>
         <ul>
           <li><strong>User Email:</strong> —</li>

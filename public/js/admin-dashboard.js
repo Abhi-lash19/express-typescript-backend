@@ -20,10 +20,8 @@
     try {
       const res = await fetch("/health");
       const data = await res.json();
-
       document.getElementById("api-status").textContent =
         data.status === "ok" ? "🟢 Healthy" : "🔴 Unhealthy";
-
       document.getElementById("api-uptime").textContent =
         Math.floor(data.uptime) + " sec";
     } catch {
@@ -67,4 +65,6 @@
   loadHealth();
   loadSystem();
   loadAuthContext();
+
+  window.addEventListener("storage", loadAuthContext);
 })();
