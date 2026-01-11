@@ -56,66 +56,69 @@
       </section>
     </section>
 
-    <!-- HOW TO USE -->
+    <!-- HOW TO USE (COLLAPSIBLE) -->
     <article>
-      <h3>🧭 How to Use This System</h3>
+      <details>
+        <summary><strong>🧭 How to Use This System</strong></summary>
 
-      <ol>
-        <li>
-          Click <strong>Login / Get JWT</strong> and create a user account
-        </li>
-        <li>
-          Navigate to <strong>API Playground</strong> to generate a JWT token
-        </li>
-        <li>
-          Select an API endpoint and send authenticated requests
-        </li>
-        <li>
-          Observe ownership enforcement — only creators can update or delete data
-        </li>
-      </ol>
+        <ol style="margin-top: 1rem">
+          <li>
+            Click <strong>Login / Get JWT</strong> and create a user account
+          </li>
+          <li>
+            Navigate to <strong>API Playground</strong> to generate a JWT token
+          </li>
+          <li>
+            Select an API endpoint and send authenticated requests
+          </li>
+          <li>
+            Observe ownership enforcement — only creators can update or delete data
+          </li>
+        </ol>
+      </details>
     </article>
 
-    <!-- API PLAYGROUND GUIDE -->
+    <!-- API PLAYGROUND GUIDE (COLLAPSIBLE) -->
     <article>
-      <h3>🧪 API Playground – Step-by-Step Guide</h3>
+      <details>
+        <summary><strong>🧪 API Playground – Step-by-Step Guide</strong></summary>
 
-      <ol>
-        <li>
-          <strong>Generate JWT</strong><br />
-          Enter your email and password in the <em>Generate JWT</em> panel and click
-          <strong>Generate Token</strong>. The issued JWT is automatically applied.
-        </li>
+        <ol style="margin-top: 1rem">
+          <li>
+            <strong>Generate JWT</strong><br />
+            Enter your email and password in the <em>Generate JWT</em> panel and click
+            <strong>Generate Token</strong>. The JWT is automatically applied.
+          </li>
 
-        <li>
-          <strong>Select an Endpoint</strong><br />
-          Click any endpoint from the <em>Endpoints</em> list. The HTTP method,
-          path, parameters, and example schemas are preloaded.
-        </li>
+          <li>
+            <strong>Select an Endpoint</strong><br />
+            Click any endpoint from the <em>Endpoints</em> list. Method, path,
+            parameters, and schemas are preloaded.
+          </li>
 
-        <li>
-          <strong>Edit Path & Query Parameters</strong><br />
-          If the endpoint contains <code>{id}</code>, replace it with a valid ID.
-          Add query parameters where applicable.
-        </li>
+          <li>
+            <strong>Edit Path & Query Parameters</strong><br />
+            Replace <code>{id}</code> values and add query parameters if required.
+          </li>
 
-        <li>
-          <strong>Edit Request Body</strong><br />
-          For POST / PUT requests, switch to the <em>Body</em> tab and modify the JSON payload.
-        </li>
+          <li>
+            <strong>Edit Request Body</strong><br />
+            For POST / PUT requests, open the <em>Body</em> tab and modify JSON.
+          </li>
 
-        <li>
-          <strong>Send Request</strong><br />
-          Click <strong>Send Request</strong> to execute the API call and inspect
-          the live response, status code, and latency.
-        </li>
+          <li>
+            <strong>Send Request</strong><br />
+            Click <strong>Send Request</strong> to inspect live responses,
+            status codes, and latency.
+          </li>
 
-        <li>
-          <strong>Understand Ownership Rules</strong><br />
-          You can only update or delete resources created using your JWT.
-          Unauthorized access is intentionally returned as <code>404</code>.
-        </li>
-      </ol>
+          <li>
+            <strong>Ownership Rules</strong><br />
+            Only resources created with your JWT can be updated or deleted.
+            Unauthorized access returns <code>404</code> by design.
+          </li>
+        </ol>
+      </details>
     </article>
 
     <!-- PAGE GUIDE -->
@@ -126,7 +129,7 @@
         <article>
           <h4>🏠 Home</h4>
           <p class="muted">
-            High-level overview of the system, architecture, metrics, and usage instructions.
+            System overview, metrics, architecture, and usage guidance.
           </p>
         </article>
 
@@ -159,21 +162,30 @@
       <ul>
         <li>
           <strong>High-Level Design (HLD):</strong>
-          <a href="#" target="_blank" rel="noopener">
+          <a
+            href="https://www.notion.so/HLD-Express-Supabase-Backend-System-2df0e402cf69801d8624c9b8f2c6dcc6"
+            target="_blank"
+            rel="noopener"
+          >
             View HLD on Notion
           </a>
         </li>
+
         <li>
           <strong>Low-Level Design (LLD):</strong>
-          <a href="#" target="_blank" rel="noopener">
+          <a
+            href="https://www.notion.so/LLD-Express-Supabase-Backend-System-2df0e402cf6980d084dac70112edc6a8"
+            target="_blank"
+            rel="noopener"
+          >
             View LLD on Notion
           </a>
         </li>
       </ul>
 
       <p class="muted">
-        These documents cover system architecture, data flow, middleware layering,
-        security considerations, and API lifecycle design.
+        These documents cover architecture, data flow, middleware layering,
+        security decisions, and API lifecycle design.
       </p>
     </article>
 
