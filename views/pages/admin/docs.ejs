@@ -1,5 +1,4 @@
 <!--views/pages/admin/docs.ejs-->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -28,7 +27,7 @@
         align-items: center;
         justify-content: space-between;
         padding: 0.75rem 1.25rem;
-        background: var(--bg-dark);
+        background: #0f172a;
         color: #e5e7eb;
       }
 
@@ -48,7 +47,7 @@
         border-radius: 6px;
       }
 
-      /* ---------- Swagger Theme ---------- */
+      /* ---------- Theme Background ---------- */
       body[data-theme="dark"] {
         background: var(--bg-dark);
       }
@@ -57,18 +56,40 @@
         background: var(--bg-light);
       }
 
-      body[data-theme="dark"] .swagger-ui {
-        background: var(--bg-dark);
+      /* -----------------------------
+         Swagger Schemas – Dark Mode Fix
+      --------------------------------*/
+      body[data-theme="dark"] .swagger-ui .model-container,
+      body[data-theme="dark"] .swagger-ui .model-box,
+      body[data-theme="dark"] .swagger-ui .model,
+      body[data-theme="dark"] .swagger-ui .models,
+      body[data-theme="dark"] .swagger-ui section.models {
+        background-color: #020617 !important;
+        border: 1px solid #1e293b !important;
       }
 
-      body[data-theme="dark"] .swagger-ui * {
+      body[data-theme="dark"] .swagger-ui .model-title,
+      body[data-theme="dark"] .swagger-ui .model-title__text {
         color: #e5e7eb !important;
       }
 
-      body[data-theme="light"] .swagger-ui * {
-        color: #0f172a !important;
+      body[data-theme="dark"] .swagger-ui .model-toggle {
+        background-color: #020617 !important;
       }
 
+      body[data-theme="dark"] .swagger-ui .model-toggle::after {
+        filter: invert(1);
+      }
+
+      body[data-theme="dark"] .swagger-ui .model-box-control {
+        color: #93c5fd !important;
+      }
+
+      body[data-theme="dark"] .swagger-ui .model-container:hover {
+        border-color: #38bdf8 !important;
+      }
+
+      /* Hide default Swagger topbar */
       .swagger-ui .topbar {
         display: none;
       }
@@ -93,25 +114,40 @@
     <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
 
     <script>
-      function applyTheme() {
+      /* -------------------------
+         Unified Theme Handling
+      ------------------------- */
+      function syncTheme() {
         const theme =
           localStorage.getItem("theme") ||
           (window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light");
 
+        document.documentElement.setAttribute("data-theme", theme);
         document.body.setAttribute("data-theme", theme);
       }
 
       function toggleTheme() {
-        const current = document.body.getAttribute("data-theme");
+        const current =
+          document.documentElement.getAttribute("data-theme") || "light";
         const next = current === "dark" ? "light" : "dark";
+
         localStorage.setItem("theme", next);
+        document.documentElement.setAttribute("data-theme", next);
         document.body.setAttribute("data-theme", next);
+
+        window.dispatchEvent(new Event("themechange"));
       }
 
-      applyTheme();
+      syncTheme();
 
+      window.addEventListener("storage", syncTheme);
+      window.addEventListener("themechange", syncTheme);
+
+      /* -------------------------
+         Swagger Init
+      ------------------------- */
       SwaggerUIBundle({
         url: "/openapi.json",
         dom_id: "#swagger-ui",
