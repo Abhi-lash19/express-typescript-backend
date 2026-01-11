@@ -128,35 +128,59 @@
         color: #c62828;
         font-weight: 600;
       }
+
+      /* ---------- Responsive Navbar ---------- */
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-left,
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      /* Hamburger button */
+      .nav-toggle {
+        display: none;
+        font-size: 1.4rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      /* Mobile styles */
+      @media (max-width: 768px) {
+        .nav-toggle {
+          display: block;
+        }
+
+        .nav-right {
+          display: none;
+          position: absolute;
+          top: 64px;
+          right: 1rem;
+          flex-direction: column;
+          background: var(--pico-background-color);
+          padding: 1rem;
+          border-radius: 12px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+          z-index: 2000;
+        }
+
+        .nav-right.show {
+          display: flex;
+        }
+      }
     </style>
   </head>
 
   <body>
     <!-- GLOBAL NAVIGATION -->
-    <header class="container">
-      <nav>
-        <ul>
-          <li><strong>Backend Admin</strong></li>
-        </ul>
-
-        <ul>
-          <!-- Dashboard is now the HOME -->
-          <li><a href="/admin/dashboard">Home</a></li>
-          <li><a href="/admin/playground">API Playground</a></li>
-          <li><a href="/admin/docs">Docs</a></li>
-
-          <li>
-            <button type="button" onclick="toggleTheme()">🌗</button>
-          </li>
-
-          <li>
-            <button type="button" onclick="openAuthModal()">
-              Login / Get JWT
-            </button>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <%- include('partials/nav') %>
 
     <main class="container">
       <%- body %>

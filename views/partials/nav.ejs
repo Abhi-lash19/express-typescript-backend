@@ -1,14 +1,23 @@
 <!--views/partials/nav.ejs-->
 <header class="container">
-  <nav>
-    <ul>
+  <nav class="nav">
+    <ul class="nav-left">
       <li><strong>Backend Admin</strong></li>
     </ul>
 
-    <ul>
+    <!-- Hamburger (mobile only) -->
+    <button
+      class="nav-toggle"
+      aria-label="Toggle navigation"
+      onclick="toggleNav()"
+    >
+      ☰
+    </button>
+
+    <ul class="nav-right" id="navMenu">
       <li><a href="/">Home</a></li>
       <li><a href="/admin/dashboard">Home</a></li>
-      <li><a href="/admin/playground">API Playground</a></li>
+      <li><a href="/admin/playground">Playground</a></li>
       <li><a href="/admin/docs">Docs</a></li>
 
       <li>
@@ -27,4 +36,3 @@
 
   <hr />
 </header>
-

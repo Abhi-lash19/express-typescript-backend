@@ -2,6 +2,16 @@
 
 (function () {
   /* -------------------------
+   * Responsive Navigation
+   * ------------------------- */
+  window.toggleNav = function () {
+    const menu = document.getElementById("navMenu");
+    if (menu) {
+      menu.classList.toggle("show");
+    }
+  };
+
+  /* -------------------------
    * Theme Handling
    * ------------------------- */
   window.toggleTheme = function () {
