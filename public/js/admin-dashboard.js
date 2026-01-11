@@ -67,4 +67,5 @@
   loadAuthContext();
 
   window.addEventListener("storage", loadAuthContext);
+  window.addEventListener("themechange", loadAuthContext);
 })();

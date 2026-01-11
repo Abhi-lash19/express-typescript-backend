@@ -11,6 +11,9 @@
     localStorage.setItem("theme", next);
   };
 
+  // notify all listeners (dashboard, docs, etc.)
+  window.dispatchEvent(new Event("themechange"));
+
   /* -------------------------
    * Modal Controls
    * ------------------------- */
