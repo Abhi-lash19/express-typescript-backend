@@ -1,76 +1,83 @@
-```md
-# express-typescript-backend
-
-A **production-oriented backend system** built using **Express.js and TypeScript**, focused on **secure API design**, **authentication**, **authorization**, and **clean architectural layering**.
-
-The goal of this project is to demonstrate how a real backend service can be structured with **clarity**, **safety**, and **maintainability** as first-class concerns.
 
 ---
 
-## ✨ Project Overview
+# express-typescript-backend
+
+A **production-oriented backend system** built with **TypeScript** and **Express.js**, designed to demonstrate **secure API design**, **stateless authentication**, **ownership-based authorization**, and **clean architectural layering**.
+
+This project prioritizes **clarity**, **safety**, and **maintainability** over minimalism, mirroring patterns used in real-world backend services rather than toy examples.
+
+---
+
+## ✨ Overview
 
 This backend provides:
 
-- JWT-based authentication
-- User-scoped data access
-- Clear separation of responsibilities
-- Defensive error handling
-- A server-rendered Admin UI for system interaction and documentation
+* JWT-based authentication
+* Ownership-scoped data access
+* Clear separation of responsibilities
+* Defensive, non-leaky error handling
+* A lightweight **server-rendered Admin UI** for interaction and documentation
 
-The system mirrors patterns commonly used in real-world backend services rather than minimal examples.
+The architecture is intentionally explicit and layered, making the system easy to reason about, extend, and audit.
 
 ---
 
 ## 🏗️ High-Level Architecture
 
 ```
-
 Client / Admin UI
-↓
-Express Routes
-↓
-Middleware Layer
-↓
-Controllers
-↓
-Services (Business Logic)
-↓
+        ↓
+   Express Routes
+        ↓
+  Middleware Layer
+        ↓
+     Controllers
+        ↓
+ Services (Business Logic)
+        ↓
 Repositories (DB Access)
-↓
-Supabase (Postgres + RLS)
+        ↓
+ Supabase (Postgres + RLS)
+```
 
-````
+Each layer has a **single responsibility** and communicates **only with adjacent layers**, ensuring:
 
-Each layer has a **single responsibility** and communicates only with adjacent layers.
+* Predictable request → response flow
+* Strong separation of concerns
+* Long-term maintainability
+* Safe refactoring without cascading changes
 
 ---
 
 ## 🎯 System Goals
 
-- Stateless authentication using JWTs
-- Secure, ownership-based access control
-- Predictable request → response flow
-- Clear boundaries between infrastructure and business logic
-- Easy-to-extend architecture without rewriting core logic
+* Stateless authentication using JWTs
+* Secure, ownership-based authorization
+* Deterministic and testable business logic
+* Clear boundaries between infrastructure and domain logic
+* Easy extensibility without rewriting core components
 
 ---
 
 ## 🔐 Authentication Model
 
-- Authentication is handled using **Supabase Auth**
-- Supabase issues JWTs after signup/login
-- Tokens are sent with each request using:
+Authentication is handled using **Supabase Auth**.
+
+* Users authenticate via Supabase (signup / login)
+* Supabase issues a signed JWT
+* The token is sent with every request:
 
 ```http
 Authorization: Bearer <JWT>
-````
+```
 
 ### Key Properties
 
 * No server-side sessions
-* No user identity fabrication on the backend
-* All requests are authenticated per-call
-* Authorization decisions are deterministic and stateless
+* No backend-generated user identities
+* Every request is authenticated independently
+* Authorization decisions are fully stateless and deterministic
 
 ---
 
@@ -80,34 +87,39 @@ The system enforces **ownership-based access control**.
 
 ### Read Access
 
-Authenticated users can:
+Authenticated users may:
 
-* List tasks
-* Fetch a task by ID
+* List their tasks
+* Fetch a task by ID (only if owned)
 
 ### Write Access
 
-Users can only:
+Users may only:
 
 * Create tasks for themselves
 * Update their own tasks
 * Delete their own tasks
 
-### Enforcement Layers
+### Defense-in-Depth Enforcement
 
 Ownership is enforced at **three independent layers**:
 
-1. **Service Layer** — explicit ownership checks
-2. **Repository Layer** — queries scoped by `user_id`
-3. **Database Layer** — Supabase Row Level Security (RLS)
+1. **Service Layer**
+   Explicit ownership checks before mutations
 
-This layered approach ensures that even if one layer fails, others still protect the system.
+2. **Repository Layer**
+   All queries scoped by `user_id`
+
+3. **Database Layer**
+   **PostgreSQL Row Level Security (RLS)** enforced by Supabase
+
+Even if one layer is misconfigured, the remaining layers continue to protect user data.
 
 ---
 
 ## ⚠️ Error Handling Philosophy
 
-The API uses **defensive error semantics**:
+The API follows **defensive error semantics**:
 
 | Status | Meaning                         |
 | -----: | ------------------------------- |
@@ -116,13 +128,18 @@ The API uses **defensive error semantics**:
 |    404 | Resource not found or not owned |
 |    500 | Internal server error           |
 
-Ownership information is **never leaked** through error messages.
+**Ownership information is never leaked**.
+A user cannot distinguish between “not found” and “not owned.”
+
+This prevents user enumeration and data inference attacks.
 
 ---
 
 ## 🧭 Admin UI (Server-Rendered)
 
-The project includes a lightweight **server-rendered Admin UI** that provides:
+The project includes a minimal **server-rendered Admin UI** used for exploration and documentation.
+
+### Features
 
 * **Home**
 
@@ -134,35 +151,39 @@ The project includes a lightweight **server-rendered Admin UI** that provides:
 * **Docs**
 
   * Architecture explanation
-  * Design decisions
+  * Design rationale and tradeoffs
 
-Authentication is handled via a **modal-based flow**, keeping the UI simple and dependency-free.
+Authentication is handled via a **modal-based flow**, keeping the UI:
+
+* Dependency-free
+* Easy to audit
+* Simple to maintain
 
 ---
 
 ## 🧪 Demo Assumptions
 
-To keep the system focused and safe:
+To keep the system focused and safe, the following assumptions are intentional:
 
 * Email addresses do not need to be real
-* No password reset or email verification
-* Forgetting credentials results in a new isolated user
+* No email verification or password reset flows
+* Forgotten credentials result in a new isolated user
 * No cross-user data access is possible
 
-These are intentional tradeoffs, not missing features.
+These are **conscious tradeoffs**, not missing features.
 
 ---
 
 ## 🚫 Intentionally Excluded Features
 
-The following are deliberately excluded to maintain architectural focus:
+The following are deliberately excluded to preserve architectural clarity:
 
 * Email verification
 * Password reset flows
 * Social authentication
 * Admin user management
 
-These can be added later without changing the core design.
+All of these can be added later **without changing the core design**.
 
 ---
 
@@ -180,11 +201,11 @@ These can be added later without changing the core design.
 * **PostgreSQL**
 * **Row Level Security (RLS)**
 
-### Frontend (Admin UI)
+### Admin UI
 
-* **Server-Side Rendering (EJS)**
+* Server-Side Rendering (**EJS**)
 * **Pico CSS**
-* **Vanilla JavaScript**
+* Vanilla JavaScript
 
 ---
 
@@ -209,22 +230,22 @@ public/
 └── js/              # Client-side helpers
 ```
 
-Each directory reflects a **clear responsibility boundary**.
+Each directory represents a **clear responsibility boundary**, making the codebase easy to navigate and reason about.
 
 ---
 
 ## 📘 What I Learned Building This Project
 
-* How to design **layered backend architecture** that scales cleanly
+* How to design **layered backend architectures** that scale cleanly
 * How to combine **JWT authentication** with **database-level security**
 * Why authorization should be enforced at multiple layers
-* How to avoid leaking sensitive information through errors
-* How to build a minimal Admin UI without introducing frontend complexity
+* How to avoid leaking sensitive information through error handling
+* How to build a minimal Admin UI without frontend complexity
 * How to keep backend systems readable and predictable over time
 
 ---
 
-## 🚀 Getting Started (Local)
+## 🚀 Getting Started (Local Development)
 
 ```bash
 npm install
@@ -232,11 +253,10 @@ npm run build
 npm run dev
 ```
 
-The server runs at:
+The server will be available at:
 
 ```
 http://localhost:3000
 ```
 
 ---
-
