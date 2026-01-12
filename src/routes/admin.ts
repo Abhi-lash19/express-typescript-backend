@@ -1,7 +1,5 @@
 // src/routes/admin.ts
 import { Router } from "express";
-import { renderMarkdown } from "../utils";
-
 export const adminRouter = Router();
 
 /**
@@ -15,13 +13,8 @@ adminRouter.get("/", (_req, res) => {
  * Admin Home (HLD + LLD embedded)
  */
 adminRouter.get("/home", (_req, res) => {
-  const hld = renderMarkdown("docs/hld.md");
-  const lld = renderMarkdown("docs/lld.md");
-
   res.render("pages/admin/home", {
     title: "Home",
-    hld,
-    lld,
   });
 });
 
