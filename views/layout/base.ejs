@@ -188,7 +188,7 @@
 
     <!-- PAGE CONTENT -->
     <main class="container">
-      <%- body %>
+      <%- typeof body !== "undefined" ? body : "" %>
     </main>
 
     <!-- AUTH MODAL -->
