@@ -1,106 +1,242 @@
+```md
 # express-typescript-backend
 
-A production-ready backend built using **Express.js + TypeScript**, designed to
-demonstrate secure REST API architecture, authentication, authorization,
-and clean layering.
+A **production-oriented backend system** built using **Express.js and TypeScript**, focused on **secure API design**, **authentication**, **authorization**, and **clean architectural layering**.
 
-This project is intentionally built to be **reviewer-friendly**, **interview-ready**,
-and **security-first**.
+The goal of this project is to demonstrate how a real backend service can be structured with **clarity**, **safety**, and **maintainability** as first-class concerns.
+
+---
+
+## ✨ Project Overview
+
+This backend provides:
+
+- JWT-based authentication
+- User-scoped data access
+- Clear separation of responsibilities
+- Defensive error handling
+- A server-rendered Admin UI for system interaction and documentation
+
+The system mirrors patterns commonly used in real-world backend services rather than minimal examples.
+
+---
+
+## 🏗️ High-Level Architecture
+
+```
+
+Client / Admin UI
+↓
+Express Routes
+↓
+Middleware Layer
+↓
+Controllers
+↓
+Services (Business Logic)
+↓
+Repositories (DB Access)
+↓
+Supabase (Postgres + RLS)
+
+````
+
+Each layer has a **single responsibility** and communicates only with adjacent layers.
 
 ---
 
 ## 🎯 System Goals
 
-- JWT-based authentication using **Supabase Auth**
-- User-scoped data access enforced via **Row Level Security (RLS)**
-- Clean separation of concerns (middleware → controller → service → repository)
-- Built-in admin UI for:
-  - system inspection
-  - API exploration
-  - documentation
+- Stateless authentication using JWTs
+- Secure, ownership-based access control
+- Predictable request → response flow
+- Clear boundaries between infrastructure and business logic
+- Easy-to-extend architecture without rewriting core logic
 
 ---
 
 ## 🔐 Authentication Model
 
-- Authentication uses **Supabase-issued JWTs**
-- Tokens are passed via:
+- Authentication is handled using **Supabase Auth**
+- Supabase issues JWTs after signup/login
+- Tokens are sent with each request using:
 
-## Authorization: Bearer <JWT>
+```http
+Authorization: Bearer <JWT>
+````
 
-- Authentication is **stateless**
-- No server-side sessions
-- Backend never fabricates user identities
+### Key Properties
 
-JWT validation flow:
-
-## JWT → Supabase Auth → user.id → RLS → database access
-
+* No server-side sessions
+* No user identity fabrication on the backend
+* All requests are authenticated per-call
+* Authorization decisions are deterministic and stateless
 
 ---
 
-## 👀 Read vs ✏️ Write Access Model
+## 🔒 Authorization & Ownership Model
 
-This system intentionally separates **read access** from **write access**.
+The system enforces **ownership-based access control**.
 
 ### Read Access
-- Any **authenticated user** can:
-  - list tasks
-  - fetch any task by ID
+
+Authenticated users can:
+
+* List tasks
+* Fetch a task by ID
 
 ### Write Access
-- Users can **only**:
-  - create tasks for themselves
-  - update their own tasks
-  - delete their own tasks
 
-Ownership is enforced at **three layers**:
-1. Service-level checks
-2. Repository filters (`user_id`)
-3. Supabase Row Level Security (final guard)
+Users can only:
 
----
+* Create tasks for themselves
+* Update their own tasks
+* Delete their own tasks
 
-## 🧪 Demo Assumptions (Intentional)
+### Enforcement Layers
 
-- Email addresses do **not** need to be real inboxes
-- Users must remember their credentials to reuse the same workspace
-- Forgetting credentials creates a **new isolated user**
-- No cross-user access is possible
+Ownership is enforced at **three independent layers**:
 
-These tradeoffs are intentional to keep the demo simple and safe.
+1. **Service Layer** — explicit ownership checks
+2. **Repository Layer** — queries scoped by `user_id`
+3. **Database Layer** — Supabase Row Level Security (RLS)
+
+This layered approach ensures that even if one layer fails, others still protect the system.
 
 ---
 
-## ⚠️ Error Semantics
+## ⚠️ Error Handling Philosophy
 
-| Status | Meaning |
-|------|--------|
-| 400 | Invalid request |
-| 401 | Authentication failed |
-| 404 | Resource not found **or not owned** |
-| 500 | Internal server error |
+The API uses **defensive error semantics**:
 
-Ownership is **not leaked** via error messages.
+| Status | Meaning                         |
+| -----: | ------------------------------- |
+|    400 | Invalid request                 |
+|    401 | Authentication failed           |
+|    404 | Resource not found or not owned |
+|    500 | Internal server error           |
 
----
-
-## 🚫 Intentionally Excluded
-
-- Email verification
-- Password reset
-- Social login
-- Admin user management
-
-These are excluded to keep the demo focused.
+Ownership information is **never leaked** through error messages.
 
 ---
 
-## 📚 Documentation Layers
+## 🧭 Admin UI (Server-Rendered)
 
-- **Admin Playground** → live API testing (runtime)
-- **OpenAPI (planned)** → formal API contracts
-- **Admin Docs Page** → architectural explanation
+The project includes a lightweight **server-rendered Admin UI** that provides:
 
-Each serves a different audience.
+* **Home**
+
+  * System overview
+  * Health checks
+* **API Playground**
+
+  * Interactive JWT-based API testing
+* **Docs**
+
+  * Architecture explanation
+  * Design decisions
+
+Authentication is handled via a **modal-based flow**, keeping the UI simple and dependency-free.
+
+---
+
+## 🧪 Demo Assumptions
+
+To keep the system focused and safe:
+
+* Email addresses do not need to be real
+* No password reset or email verification
+* Forgetting credentials results in a new isolated user
+* No cross-user data access is possible
+
+These are intentional tradeoffs, not missing features.
+
+---
+
+## 🚫 Intentionally Excluded Features
+
+The following are deliberately excluded to maintain architectural focus:
+
+* Email verification
+* Password reset flows
+* Social authentication
+* Admin user management
+
+These can be added later without changing the core design.
+
+---
+
+## 🧱 Tech Stack
+
+### Backend
+
+* **Node.js**
+* **Express.js**
+* **TypeScript**
+
+### Authentication & Database
+
+* **Supabase Auth**
+* **PostgreSQL**
+* **Row Level Security (RLS)**
+
+### Frontend (Admin UI)
+
+* **Server-Side Rendering (EJS)**
+* **Pico CSS**
+* **Vanilla JavaScript**
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── routes/          # HTTP route definitions
+├── middleware/      # Auth, validation, guards
+├── controllers/     # Request/response orchestration
+├── services/        # Business logic
+├── repositories/    # Database access logic
+├── lib/             # Shared utilities
+└── app.ts           # Application entry point
+
+views/
+├── layout/          # Base layout
+├── partials/        # Shared UI components
+└── pages/           # Admin UI pages
+
+public/
+└── js/              # Client-side helpers
+```
+
+Each directory reflects a **clear responsibility boundary**.
+
+---
+
+## 📘 What I Learned Building This Project
+
+* How to design **layered backend architecture** that scales cleanly
+* How to combine **JWT authentication** with **database-level security**
+* Why authorization should be enforced at multiple layers
+* How to avoid leaking sensitive information through errors
+* How to build a minimal Admin UI without introducing frontend complexity
+* How to keep backend systems readable and predictable over time
+
+---
+
+## 🚀 Getting Started (Local)
+
+```bash
+npm install
+npm run build
+npm run dev
+```
+
+The server runs at:
+
+```
+http://localhost:3000
+```
+
+---
 
