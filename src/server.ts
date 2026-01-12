@@ -21,7 +21,7 @@ import { internalRouter } from "./routes/internal";
 import { adminRouter } from "./routes/admin";
 import { taskRouter } from "./routes/tasks";
 import { authRouter } from "./routes/auth";
-import { renderMarkdown } from "./utils";
+
 import { errorHandler } from "./middleware/errorHandler";
 import { AppError } from "./errors/AppError";
 import { buildOpenApiSpec } from "./openapi";
@@ -56,7 +56,7 @@ app.set("trust proxy", 1);
 // Security headers
 app.use(
   helmet({
-    contentSecurityPolicy: false, // required for EJS inline scripts
+    contentSecurityPolicy: false,
   })
 );
 
@@ -99,9 +99,13 @@ app.use(requestLogger);
  */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "..", "views"));
+
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use((req, res, next) => {
+/** SERVE MARKDOWN SAFELY */
+app.use("/docs", express.static(path.join(__dirname, "..", "docs")));
+
+app.use((_, res, next) => {
   res.locals.env = process.env.NODE_ENV || "development";
   next();
 });
@@ -131,13 +135,8 @@ app.get("/health", (_req, res) => {
  * - No rate limiting
  */
 app.get("/", (_req, res) => {
-  const hld = renderMarkdown("docs/hld.md");
-  const lld = renderMarkdown("docs/lld.md");
-
   res.render("pages/admin/home", {
     title: "Home",
-    hld,
-    lld,
   });
 });
 
