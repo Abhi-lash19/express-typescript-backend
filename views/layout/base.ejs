@@ -1,4 +1,4 @@
-<!--views/layout/base.ejs-->
+<!-- views/layout/base.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -244,18 +244,7 @@
       </div>
     </div>
 
-    <!-- GLOBAL JS HELPERS -->
-    <script>
-      window.toggleNav = function () {
-        document.getElementById("navMenu")?.classList.toggle("show");
-      };
-
-      window.logout = function () {
-        localStorage.clear();
-        location.href = "/";
-      };
-    </script>
-
+    <!-- GLOBAL JS -->
     <script src="/js/app.js"></script>
   </body>
 </html>

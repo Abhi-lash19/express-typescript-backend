@@ -5,10 +5,7 @@
    * Responsive Navigation
    * ------------------------- */
   window.toggleNav = function () {
-    const menu = document.getElementById("navMenu");
-    if (menu) {
-      menu.classList.toggle("show");
-    }
+    document.getElementById("navMenu")?.classList.toggle("show");
   };
 
   /* -------------------------
@@ -19,6 +16,34 @@
     const next = current === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
+  };
+
+  /* -------------------------
+   * Auth UI State (Navbar)
+   * ------------------------- */
+  function renderAuthButton() {
+    const slot = document.getElementById("auth-action");
+    if (!slot) return;
+
+    const token = localStorage.getItem("auth_token");
+
+    if (token) {
+      slot.innerHTML = `
+        <button class="outline" onclick="logout()">Logout</button>
+      `;
+    } else {
+      slot.innerHTML = `
+        <button class="outline" onclick="openAuthModal()">
+          Login / Signup
+        </button>
+      `;
+    }
+  }
+
+  window.logout = function () {
+    localStorage.removeItem("auth_token");
+    renderAuthButton();
+    openAuthModal();
   };
 
   /* -------------------------
@@ -62,6 +87,8 @@
    * Signup Handler
    * ------------------------- */
   document.addEventListener("DOMContentLoaded", () => {
+    renderAuthButton();
+
     const form = document.getElementById("auth-form");
     if (!form) return;
 
@@ -72,6 +99,7 @@
     passwordInput.addEventListener("input", () => {
       const errors = validatePassword(passwordInput.value);
       hints.innerHTML = "";
+
       errors.forEach((e) => {
         const li = document.createElement("li");
         li.textContent = e;
@@ -110,7 +138,7 @@
           return;
         }
 
-        // auto-login
+        // Auto-login after signup
         if (data.token) {
           localStorage.setItem("auth_token", data.token);
           window.dispatchEvent(new Event("storage"));
@@ -128,4 +156,9 @@
       }
     });
   });
+
+  /* -------------------------
+   * Cross-tab Sync
+   * ------------------------- */
+  window.addEventListener("storage", renderAuthButton);
 })();
